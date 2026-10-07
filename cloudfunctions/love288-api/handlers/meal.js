@@ -7,6 +7,7 @@ const time = require('../lib/time');
 const idLib = require('../lib/id');
 const paging = require('../lib/paging');
 const caseLib = require('../lib/case');
+const subscribe = require('../lib/subscribe');
 
 async function remindCount(ctx, today) {
   const r = await ctx.db.collection('meal_reminders')
@@ -82,6 +83,12 @@ async function create(ctx, event) {
   await db.runTransaction(async function (t) {
     await t.collection('meal_appointments').doc(mealId).set({ data: mealDoc });
     await t.collection('calendar_events').doc(eventId).set({ data: eventDoc });
+  });
+  /* 尽力推送订阅消息给对方（失败静默） */
+  subscribe.send(ctx.cloud, ctx.partnerId, 'plan', {
+    thing1: '约饭 · ' + title,
+    time3: date + ' ' + timeOfDay,
+    thing2: location
   });
   return { meal: caseLib.toPub(mealDoc), event: caseLib.toPub(eventDoc) };
 }

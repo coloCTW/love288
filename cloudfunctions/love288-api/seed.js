@@ -102,10 +102,12 @@ const SEED = {
     { _id: 'ms-2', coupleId: config.DEMO_COUPLE_ID, userId: config.DEMO_LIN, content: '加班也要认真吃晚饭！', images: [], postId: '', createdAt: ago(4 * D) }
   ],
 
-  /* 互动事件示例 */
+  /* 互动事件示例（含 su→lin 的"收到的互动"，供 interaction.list 演示） */
   interactions: [
     { _id: 'it-1', coupleId: config.DEMO_COUPLE_ID, senderId: config.DEMO_LIN, receiverId: config.DEMO_SU, type: 'miss_you', content: '想你了', createdAt: ago(2 * H) },
-    { _id: 'it-2', coupleId: config.DEMO_COUPLE_ID, senderId: config.DEMO_LIN, receiverId: config.DEMO_SU, type: 'water', content: '提醒 TA 喝水', createdAt: ago(1 * H) }
+    { _id: 'it-2', coupleId: config.DEMO_COUPLE_ID, senderId: config.DEMO_LIN, receiverId: config.DEMO_SU, type: 'water', content: '提醒 TA 喝水', createdAt: ago(1 * H) },
+    { _id: 'it-3', coupleId: config.DEMO_COUPLE_ID, senderId: config.DEMO_SU, receiverId: config.DEMO_LIN, type: 'hug', content: '抱抱', createdAt: ago(90 * 60000) },
+    { _id: 'it-4', coupleId: config.DEMO_COUPLE_ID, senderId: config.DEMO_SU, receiverId: config.DEMO_LIN, type: 'miss_you', content: '想你了', createdAt: ago(3 * H) }
   ],
 
   /* 天气缓存（首页天气卡数据源；第三方 API 为 P1） */

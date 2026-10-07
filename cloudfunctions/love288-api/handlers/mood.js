@@ -4,6 +4,7 @@
 const config = require('../lib/config');
 const errors = require('../lib/errors');
 const time = require('../lib/time');
+const subscribe = require('../lib/subscribe');
 
 function fmt(m) {
   return m ? { type: m.moodType, at: m.updatedAt } : null;
@@ -46,6 +47,11 @@ async function update(ctx, event) {
       }
     });
   }
+  /* 尽力推送订阅消息给对方（失败静默） */
+  subscribe.send(ctx.cloud, ctx.partnerId, 'mood', {
+    thing1: moodType,
+    thing2: ctx.user.nickname || 'TA'
+  });
   return { mood: { type: moodType, at: now } };
 }
 

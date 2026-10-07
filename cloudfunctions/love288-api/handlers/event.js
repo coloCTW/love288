@@ -4,6 +4,7 @@ const errors = require('../lib/errors');
 const time = require('../lib/time');
 const idLib = require('../lib/id');
 const caseLib = require('../lib/case');
+const subscribe = require('../lib/subscribe');
 
 const EVENT_TYPES = ['date', 'anniversary', 'todo'];
 
@@ -96,6 +97,14 @@ async function create(ctx, event) {
     status: 'active', mealId: '', createdAt: now, updatedAt: now
   };
   await ctx.db.collection('calendar_events').doc(eId).set({ data: eDoc });
+  /* 约会类型尽力推送订阅消息给对方（失败静默） */
+  if (eventType === 'date') {
+    subscribe.send(ctx.cloud, ctx.partnerId, 'plan', {
+      thing1: title,
+      time3: date + (timeOfDay ? ' ' + timeOfDay : ''),
+      thing2: location
+    });
+  }
   return { event: caseLib.toPub(eDoc, { creatorNickname: ctx.user.nickname || '', isMine: true }) };
 }
 

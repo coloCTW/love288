@@ -88,6 +88,13 @@ wx.cloud.callFunction({
 
 前端需在对应操作按钮上先调 `wx.requestSubscribeMessage` 请求授权（用户拒绝则只落库不推送，对方打开小程序仍能看到数据变化——双人数据本来就存在云端）。
 
+**云函数配置**（已实现，`lib/subscribe.js`）：
+
+- `config.json` 已加 `permissions.openapi: ["subscribeMessage.send"]`
+- 环境变量 `SUBSCRIBE_TEMPLATE_IDS`：JSON 对象，键为 `interaction / mealReminder / mood / plan / post / comment`，值为各模板 ID；未配置时所有推送静默跳过
+- 环境变量 `MINIPROGRAM_STATE`：`developer`（默认）/ `trial` / `formal`，发布后改 `formal`
+- 模板字段名按公众平台申请到的实际模板调整（当前占位 `thing1/thing2/time3`）
+
 ---
 
 ## 2. 接口文档
@@ -244,6 +251,30 @@ wx.cloud.callFunction({
 | `content` | string | | 自定义文案，不传用云函数内置默认文案 |
 
 **规则**：写 `interactions`；触发订阅消息（§1.8）；返回 `{ "delivered": true }`。
+
+#### `interaction.list` — 收到的互动（"收到的互动"页）
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `page` / `pageSize` | number | | 分页 |
+
+**规则**：`receiverId=我`（演示模式含 demo-lin）、`coupleId=我的情侣`，按 `createdAt` 倒序分页；联表 `users` 冗余发送方昵称/头像。
+
+**响应**：
+
+```json
+{
+  "code": 0, "message": "ok",
+  "data": {
+    "list": [
+      { "id": "it-2", "senderId": "demo-lin-openid", "nickname": "大头仔", "avatar": "",
+        "type": "water", "content": "提醒 TA 喝水", "createdAt": 1789945200000 }
+    ],
+    "total": 2,
+    "hasMore": false
+  }
+}
+```
 
 #### `reminder.meal` — 吃饭提醒（好好吃饭页"提醒 TA"）
 
@@ -569,9 +600,9 @@ wx.cloud.callFunction({
 | P0 | `mood.get/update`、`reminder.meal`（限流）、`interaction.send` | §B §C |
 | P0 | `event.*`（月历 + 详情 + 编辑删除）、`meal.*`（联动） | §D §F |
 | P0 | `post.*`（动态流 + 点赞 + 评论 + 删除）、`mealShare.*`（联动）、云存储上传 | §D §E |
-| P1 | 天气缓存 + 第三方天气 API、距离计算 | §B |
-| P1 | 订阅消息（模板申请 + 各触发点接入） | §1.8 |
-| P1 | `interaction.list`（对方"收到的互动"提醒页，新页面） | — |
+| P1 | 天气缓存 + 第三方天气 API、距离计算 ✅（和风 API，环境变量 `QWEATHER_KEY`；城市坐标表 `config.CITIES`） | §B |
+| P1 | 订阅消息 ✅ 后端发送已接入全部触发点（`lib/subscribe.js`）；模板申请 + 前端 `wx.requestSubscribeMessage` 授权待办 | §1.8 |
+| P1 | `interaction.list` ✅ 后端已实现；「收到的互动」新页面待前端 | — |
 
 ---
 

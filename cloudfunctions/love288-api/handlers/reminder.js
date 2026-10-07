@@ -4,6 +4,7 @@ const config = require('../lib/config');
 const errors = require('../lib/errors');
 const time = require('../lib/time');
 const idLib = require('../lib/id');
+const subscribe = require('../lib/subscribe');
 
 /* 文案池：原 eat.js 的 REMIND_POOL 迁入 */
 const REMIND_POOL = [
@@ -29,6 +30,11 @@ async function meal(ctx) {
       coupleId: ctx.coupleId, senderId: ctx.openid, receiverId: ctx.partnerId,
       date: today, content: content, createdAt: time.now()
     }
+  });
+  /* 尽力推送订阅消息给对方（失败静默） */
+  subscribe.send(ctx.cloud, ctx.partnerId, 'mealReminder', {
+    thing1: content,
+    thing2: ctx.user.nickname || 'TA'
   });
   return { todayCount: count + 1, limit: config.REMIND_LIMIT, content: content };
 }

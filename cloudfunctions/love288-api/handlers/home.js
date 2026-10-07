@@ -2,6 +2,7 @@
 const config = require('../lib/config');
 const time = require('../lib/time');
 const mood = require('./mood');
+const weatherLib = require('../lib/weather');
 
 const BATTERY_STALE = 24 * 3600e3;
 
@@ -17,17 +18,6 @@ function pubUser(doc) {
     batteryLevel: level,
     batteryUpdatedAt: doc.batteryUpdatedAt || null
   };
-}
-
-async function weatherFor(db, user) {
-  if (!user || !user.city) return null;
-  try {
-    const got = await db.collection('weather_cache').doc(user.city).get();
-    const w = got.data;
-    return { city: w.city, temp: w.temp, cond: w.cond, high: w.high, low: w.low, updatedAt: w.updatedAt };
-  } catch (e) {
-    return null;
-  }
 }
 
 /* 下次见面：upcoming 约饭 ∪ 非待办事件，按日期取最近 */
@@ -71,12 +61,14 @@ async function overview(ctx) {
   const cp = coupleDoc && coupleDoc.data;
   const settings = cp ? cp.settings : Object.assign({}, config.DEFAULT_SETTINGS);
 
-  /* 位置共享关闭时隐藏对方城市与天气 */
-  let taWeather = null;
-  if (settings.shareCity !== false) {
-    taWeather = await weatherFor(db, ta);
-  }
-  const meWeather = await weatherFor(db, me);
+  /* 天气（30 分钟缓存 + 和风 API）与距离（城市坐标表），并行拉取 */
+  const shareCity = settings.shareCity !== false;
+  const shareDistance = settings.shareDistance !== false;
+  const [meWeather, taWeather, distanceKm] = await Promise.all([
+    weatherLib.weatherFor(db, me && me.city),
+    shareCity ? weatherLib.weatherFor(db, ta && ta.city) : Promise.resolve(null),
+    shareDistance && me && ta ? weatherLib.distanceKm(me.city, ta.city) : Promise.resolve(null)
+  ]);
 
   return {
     me: me,
@@ -84,7 +76,7 @@ async function overview(ctx) {
     couple: {
       startDate: cp ? cp.startDate : '',
       daysTogether: cp && cp.startDate ? time.daysBetween(cp.startDate, today) : 0,
-      distanceKm: null /* P1：由城市坐标实时计算 */
+      distanceKm: distanceKm
     },
     weather: { me: meWeather, ta: taWeather },
     mood: moodPair,

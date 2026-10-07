@@ -6,6 +6,7 @@ const time = require('../lib/time');
 const idLib = require('../lib/id');
 const paging = require('../lib/paging');
 const caseLib = require('../lib/case');
+const subscribe = require('../lib/subscribe');
 
 async function list(ctx, event) {
   const scope = event.scope;
@@ -55,6 +56,11 @@ async function create(ctx, event) {
   await db.runTransaction(async function (t) {
     await t.collection('meal_shares').doc(shareId).set({ data: shareDoc });
     await t.collection('posts').doc(postId).set({ data: postDoc });
+  });
+  /* 尽力推送订阅消息给对方（失败静默） */
+  subscribe.send(ctx.cloud, ctx.partnerId, 'post', {
+    thing1: content,
+    thing2: ctx.user.nickname || 'TA'
   });
   return { share: caseLib.toPub(shareDoc), post: caseLib.toPub(postDoc) };
 }

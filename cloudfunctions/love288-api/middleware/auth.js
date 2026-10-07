@@ -84,6 +84,7 @@ async function buildContext(db, _, cloud, event) {
   return {
     db: db,
     _: _,
+    cloud: cloud,
     openid: openid,
     user: user,
     coupleId: rel.coupleId,

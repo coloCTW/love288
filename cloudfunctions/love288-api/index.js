@@ -53,6 +53,7 @@ const ROUTES = {
   'event.create': event.create,
   'event.update': event.update,
   'event.delete': event.remove,
+  'interaction.list': interaction.list,
   'interaction.send': interaction.send,
   'reminder.meal': reminder.meal
 };

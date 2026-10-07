@@ -6,6 +6,7 @@ const time = require('../lib/time');
 const idLib = require('../lib/id');
 const paging = require('../lib/paging');
 const caseLib = require('../lib/case');
+const subscribe = require('../lib/subscribe');
 
 const PREVIEW_COMMENTS = 3;
 
@@ -117,6 +118,11 @@ async function create(ctx, event) {
     likeCount: 0, commentCount: 0, deletedAt: null, createdAt: now
   };
   await ctx.db.collection('posts').doc(postId).set({ data: postDoc });
+  /* 尽力推送订阅消息给对方（失败静默） */
+  subscribe.send(ctx.cloud, ctx.partnerId, 'post', {
+    thing1: content || '发了一张照片',
+    thing2: ctx.user.nickname || 'TA'
+  });
   return { post: caseLib.toPub(postDoc, { nickname: ctx.user.nickname || '', avatar: ctx.user.avatar || '', liked: false, isMine: true, comments: [] }) };
 }
 
@@ -215,6 +221,14 @@ async function commentCreate(ctx, event) {
   const cDoc = { _id: cId, postId: postId, userId: ctx.openid, content: content, createdAt: now };
   await ctx.db.collection('comments').doc(cId).set({ data: cDoc });
   await ctx.db.collection('posts').doc(postId).update({ data: { commentCount: ctx._.inc(1) } });
+
+  /* 评论者不是帖子作者时，尽力推送订阅消息给作者（失败静默） */
+  if (post.userId !== ctx.openid) {
+    subscribe.send(ctx.cloud, post.userId, 'comment', {
+      thing1: content,
+      thing2: ctx.user.nickname || 'TA'
+    });
+  }
 
   const fresh = await fetchPost(ctx, postId);
   return {
