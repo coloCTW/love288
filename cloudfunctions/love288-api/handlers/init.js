@@ -7,6 +7,8 @@ const seed = require('../seed');
 async function seedCollection(db, name) {
   const docs = seed.SEED[name] || [];
   const col = db.collection(name);
+  /* 先清空集合再写种子 —— 真正的"还原初始状态"（含演示期间真实 openid 产生的数据） */
+  await col.where({ _id: db.command.exists(true) }).remove();
   for (let i = 0; i < docs.length; i++) {
     const doc = docs[i];
     const id = doc._id;

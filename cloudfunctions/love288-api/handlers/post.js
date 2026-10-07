@@ -66,10 +66,10 @@ async function list(ctx, event) {
     uR.data.forEach(function (u) { userMap[u._id] = u; });
   }
 
-  /* 我赞过的帖子 */
+  /* 我赞过的帖子（演示模式下 demo-lin 的赞也算"我"，与 isMine 口径一致） */
   let likedSet = {};
   if (postIds.length) {
-    const lR = await db.collection('likes').where({ postId: _.in(postIds), userId: ctx.openid }).get();
+    const lR = await db.collection('likes').where({ postId: _.in(postIds), userId: _.in(ctx.selfIds) }).get();
     lR.data.forEach(function (l) { likedSet[l.postId] = true; });
   }
 

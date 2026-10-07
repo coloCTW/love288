@@ -81,6 +81,11 @@ async function create(ctx, event) {
   const location = String(event.location || '').trim();
   const image = typeof event.image === 'string' ? event.image : '';
   const note = String(event.note || '').trim();
+  /* 约会必填城市与地点；纪念日/待办可为空 */
+  if (eventType === 'date' && (!city || !location)) {
+    throw errors.biz(40001, '约会的城市和地点要填上哦～');
+  }
+  if (timeOfDay && !/^\d{2}:\d{2}$/.test(timeOfDay)) throw errors.biz(40001, '时间格式不对哦～');
 
   const now = time.now();
   const eId = idLib.genId('ev');
@@ -100,7 +105,24 @@ async function update(ctx, event) {
   const e = await fetchEvent(ctx, eventId);
   if (!e) throw errors.biz(40401);
   if (!ctx.isMine(e.creatorId)) throw errors.biz(40301);
-  if (e.mealId) throw errors.biz(40301, '约饭的日期在「好好吃饭」里改哦～');
+  if (e.mealId) {
+    /* 约饭联动事件：日期/时间以约饭为准，只允许改备注等弱字段 */
+    const weakPatch = {};
+    if (typeof event.note === 'string') weakPatch.note = event.note.trim();
+    const hard = ['title', 'date', 'time', 'city', 'location'].filter(function (k) {
+      return typeof event[k] === 'string';
+    });
+    if (hard.length) throw errors.biz(40301, '约饭的日期在「好好吃饭」里改哦，这里只能改备注～');
+    if (!Object.keys(weakPatch).length) throw errors.biz(40001);
+    weakPatch.updatedAt = time.now();
+    await ctx.db.collection('calendar_events').doc(eventId).update({ data: weakPatch });
+    const fresh = await fetchEvent(ctx, eventId);
+    return { event: caseLib.toPub(fresh, { creatorNickname: await creatorNickname(ctx, fresh.creatorId), isMine: true }) };
+  }
+  /* 普通事件：title 和 date 至少传一个 */
+  if (typeof event.title !== 'string' && typeof event.date !== 'string') {
+    throw errors.biz(40001, '名称和日期至少要改一个哦～');
+  }
 
   const data = {};
   if (typeof event.title === 'string') {
@@ -113,7 +135,11 @@ async function update(ctx, event) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) throw errors.biz(40001, '日期不能是空的哦～');
     data.date = d;
   }
-  if (typeof event.time === 'string') data.time = event.time.trim();
+  if (typeof event.time === 'string') {
+    const t = event.time.trim();
+    if (t && !/^\d{2}:\d{2}$/.test(t)) throw errors.biz(40001, '时间格式不对哦～');
+    data.time = t;
+  }
   if (typeof event.city === 'string') data.city = event.city.trim();
   if (typeof event.location === 'string') data.location = event.location.trim();
   if (typeof event.note === 'string') data.note = event.note.trim();
@@ -132,8 +158,12 @@ async function remove(ctx, event) {
   if (!e) throw errors.biz(40401);
   if (!ctx.isMine(e.creatorId)) throw errors.biz(40301);
   if (e.mealId) {
-    /* 约饭联动事件：级联删除对应约饭 */
-    await ctx.db.collection('meal_appointments').doc(e.mealId).remove().catch(function () { /* 约饭已不存在，忽略 */ });
+    /* 约饭联动事件：同一事务级联删除对应约饭，不留孤儿数据 */
+    await ctx.db.runTransaction(async function (t) {
+      await t.collection('meal_appointments').doc(e.mealId).remove();
+      await t.collection('calendar_events').doc(eventId).remove();
+    });
+    return {};
   }
   await ctx.db.collection('calendar_events').doc(eventId).remove();
   return {};

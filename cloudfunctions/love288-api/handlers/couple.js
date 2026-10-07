@@ -19,21 +19,25 @@ function pubUser(doc) {
   };
 }
 
-/* 情侣信息（profile 页）；未绑定直接 40201 */
+/* 情侣信息（profile 页）；未绑定 40201；演示模式返回演示情侣（与首页演示体验一致） */
 async function get(ctx) {
-  if (!ctx.bound) throw errors.biz(40201);
+  if (!ctx.bound && !ctx.demoMode) throw errors.biz(40201);
   const col = ctx.db.collection('users');
-  const [meDoc, taDoc] = await Promise.all([
-    col.doc(ctx.openid).get().catch(() => null),
-    col.doc(ctx.partnerId).get().catch(() => null)
+  const meId = ctx.demoMode ? config.DEMO_LIN : ctx.openid;
+  const taId = ctx.demoMode ? config.DEMO_SU : ctx.partnerId;
+  const [meDoc, taDoc, cpDoc] = await Promise.all([
+    col.doc(meId).get().catch(() => null),
+    col.doc(taId).get().catch(() => null),
+    ctx.bound ? Promise.resolve(null)
+      : ctx.db.collection('couples').doc(ctx.coupleId).get().catch(() => null)
   ]);
-  const cp = ctx.couple;
+  const cp = ctx.bound ? ctx.couple : (cpDoc && cpDoc.data);
   return {
-    couple: {
+    couple: cp ? {
       startDate: cp.startDate,
       daysTogether: time.daysBetween(cp.startDate, time.today()),
       settings: cp.settings || Object.assign({}, config.DEFAULT_SETTINGS)
-    },
+    } : null,
     me: pubUser(meDoc && meDoc.data),
     ta: pubUser(taDoc && taDoc.data)
   };
@@ -83,7 +87,7 @@ async function bind(ctx, event) {
   const found = await col.where({ inviteCode: code, status: 'waiting' }).limit(1).get();
   if (!found.data.length) throw errors.biz(40202);
   const doc = found.data[0];
-  if (doc.userAId === ctx.openid) throw errors.biz(40001, '不能和自己绑定哦，把码发给 TA 吧～');
+  if (doc.userAId === ctx.openid) throw errors.biz(40202, '不能和自己绑定哦，把码发给 TA 吧～');
   if (!doc.inviteExpiresAt || doc.inviteExpiresAt < now) throw errors.biz(40202);
 
   await col.doc(doc._id).update({
@@ -104,7 +108,7 @@ async function bind(ctx, event) {
 
 /* 解除情侣关系：物理删除 couple 文档（历史业务数据按 coupleId 隔离，自然不可见） */
 async function unpair(ctx) {
-  if (!ctx.bound) throw errors.biz(40203);
+  if (!ctx.bound) throw errors.biz(40201);
   await ctx.db.collection('couples').doc(ctx.coupleId).remove();
   return {};
 }

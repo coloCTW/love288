@@ -58,6 +58,7 @@ async function create(ctx, event) {
     throw errors.biz(40001, '还有必填项没有填哦，检查一下～');
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw errors.biz(40001, '日期格式不对哦～');
+  if (!/^\d{2}:\d{2}$/.test(timeOfDay)) throw errors.biz(40001, '时间格式不对哦～');
 
   const now = time.now();
   const db = ctx.db;
@@ -77,9 +78,11 @@ async function create(ctx, event) {
     image: coverImage, note: note, status: 'active', mealId: mealId,
     createdAt: now, updatedAt: now
   };
-  /* 顺序双写（数据量极小，P1 可换事务） */
-  await db.collection('meal_appointments').doc(mealId).set({ data: mealDoc });
-  await db.collection('calendar_events').doc(eventId).set({ data: eventDoc });
+  /* 同一事务双写：约饭 + 月历联动事件，中断自动回滚、不留孤儿数据 */
+  await db.runTransaction(async function (t) {
+    await t.collection('meal_appointments').doc(mealId).set({ data: mealDoc });
+    await t.collection('calendar_events').doc(eventId).set({ data: eventDoc });
+  });
   return { meal: caseLib.toPub(mealDoc), event: caseLib.toPub(eventDoc) };
 }
 

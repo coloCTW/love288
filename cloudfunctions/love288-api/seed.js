@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════
    演示数据种子（与 docs/sql.md §6 一致，但日期相对"运行当天"生成，
    保证演示数据永远新鲜——语义与原 mock utils/store.js 的 seed() 相同：
-   约饭 +2 天、约会 +8/+16 天、待办 +4 天、纪念日为固定绝对日期）。
+   约饭 +2 天、约会 +8/+16 天、待办 +4 天、纪念日 +34 天）。
    修改数据请同步 docs/sql.md。
    ═══════════════════════════════════════════════════════════════════ */
 const time = require('./lib/time');
@@ -72,7 +72,7 @@ const SEED = {
   calendar_events: [
     { _id: 'ev-1', coupleId: config.DEMO_COUPLE_ID, creatorId: config.DEMO_LIN, title: '看电影', eventType: 'date', date: addD(8), time: '19:00', city: '上海市', location: 'CGV影城', image: '', note: '记得提前买票哦～', status: 'active', createdAt: ago(1 * D), updatedAt: ago(1 * D) },
     { _id: 'ev-2', coupleId: config.DEMO_COUPLE_ID, creatorId: config.DEMO_SU, title: '去看海', eventType: 'date', date: addD(16), time: '09:00', city: '青岛市', location: '五四广场', image: '', note: '终于可以一起去看海啦～', status: 'active', createdAt: ago(3 * D), updatedAt: ago(3 * D) },
-    { _id: 'ev-3', coupleId: config.DEMO_COUPLE_ID, creatorId: config.DEMO_LIN, title: '一周年纪念日', eventType: 'anniversary', date: '2026-11-10', time: '', city: '', location: '', image: '', note: '和你在一起一周年 ❤️', status: 'active', createdAt: ago(6 * D), updatedAt: ago(6 * D) },
+    { _id: 'ev-3', coupleId: config.DEMO_COUPLE_ID, creatorId: config.DEMO_LIN, title: '一周年纪念日', eventType: 'anniversary', date: addD(34), time: '', city: '', location: '', image: '', note: '和你在一起一周年 ❤️', status: 'active', createdAt: ago(6 * D), updatedAt: ago(6 * D) },
     { _id: 'ev-4', coupleId: config.DEMO_COUPLE_ID, creatorId: config.DEMO_LIN, title: '帮 TA 挑生日礼物', eventType: 'todo', date: addD(4), time: '20:00', city: '', location: '', image: '', note: '想挑一件 TA 会喜欢的', status: 'active', createdAt: ago(1 * D), updatedAt: ago(1 * D) },
     { _id: 'ev-meal-1', coupleId: config.DEMO_COUPLE_ID, creatorId: config.DEMO_LIN, title: '火锅', eventType: 'meal', date: addD(2), time: '12:30', city: '上海市', location: '海底捞（陆家嘴店）', image: '', note: '和你一起吃饭，真好～ ❤️', status: 'active', mealId: 'meal-1', createdAt: ago(1 * D), updatedAt: ago(1 * D) }
   ],

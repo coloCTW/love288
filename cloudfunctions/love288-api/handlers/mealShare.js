@@ -8,7 +8,8 @@ const paging = require('../lib/paging');
 const caseLib = require('../lib/case');
 
 async function list(ctx, event) {
-  const scope = event.scope === 'history' ? 'history' : 'today';
+  const scope = event.scope;
+  if (scope !== 'today' && scope !== 'history') throw errors.biz(40001, '范围参数不对哦～');
   const col = ctx.db.collection('meal_shares');
   const pg = paging.paging(event);
   const _ = ctx._;
@@ -50,9 +51,11 @@ async function create(ctx, event) {
     location: ctx.user.city || '', tags: ['好好吃饭'],
     likeCount: 0, commentCount: 0, deletedAt: null, createdAt: now
   };
-  /* 顺序双写（数据量极小，P1 可换事务） */
-  await db.collection('meal_shares').doc(shareId).set({ data: shareDoc });
-  await db.collection('posts').doc(postId).set({ data: postDoc });
+  /* 同一事务双写：餐食分享 + 日常动态，中断自动回滚、不留孤儿数据 */
+  await db.runTransaction(async function (t) {
+    await t.collection('meal_shares').doc(shareId).set({ data: shareDoc });
+    await t.collection('posts').doc(postId).set({ data: postDoc });
+  });
   return { share: caseLib.toPub(shareDoc), post: caseLib.toPub(postDoc) };
 }
 

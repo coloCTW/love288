@@ -4,7 +4,8 @@ function ok(data) {
 }
 
 function fail(code, message) {
-  return { code: code, message: message || '好像走神了一下，再试一次吧～' };
+  /* 统一响应格式 { code, message, data }（docs/api.md §1.2），失败时 data 为 null */
+  return { code: code, message: message || '好像走神了一下，再试一次吧～', data: null };
 }
 
 module.exports = { ok: ok, fail: fail };
