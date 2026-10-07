@@ -1,0 +1,71 @@
+<view class="page">
+  <view class="page-head">
+    <view class="hand">记录一下今天吧 <text class="heart-txt">❤️</text></view>
+    <view class="head-sub">只属于我们两个人的时间线</view>
+  </view>
+
+  <view class="card form-card">
+    <view class="form-stack">
+      <view class="field">
+        <view class="field-label">写点什么……</view>
+        <textarea class="textarea post-textarea" placeholder-class="ph" maxlength="200" placeholder="今天有什么想记下来的小事吗？" value="{{content}}" bindinput="onContent"></textarea>
+      </view>
+
+      <view class="field">
+        <view class="field-label">照片</view>
+        <view class="photo-strip">
+          <view
+            wx:for="{{slots}}"
+            wx:key="k"
+            class="photo-slot {{item.filled ? 'filled' : ''}}"
+            data-idx="{{index}}"
+            bindtap="onSlotTap"
+            hover-class="btn-press"
+          >
+            <block wx:if="{{item.filled}}">
+              <view class="filled-photo" style="background-image:url('{{item.uri || icons.flower}}');"></view>
+              <view class="rm-photo" style="background-image:url('{{icons.check}}');"></view>
+            </block>
+            <block wx:else>
+              <view class="ic ic-30" style="background-image:url('{{icons.photo}}');"></view>
+              <text>照片</text>
+            </block>
+          </view>
+        </view>
+        <view class="np-btn-row">
+          <button class="btn btn-ghost btn-sm" hover-class="btn-press" bindtap="onCamera">
+            <view class="ic ic-19" style="background-image:url('{{icons.camera}}');"></view>
+            <text>拍一张</text>
+          </button>
+          <button class="btn btn-ghost btn-sm" hover-class="btn-press" bindtap="onAlbum">
+            <view class="ic ic-19" style="background-image:url('{{icons.photoBtn}}');"></view>
+            <text>从相册选择</text>
+          </button>
+        </view>
+        <view class="photo-hint">点格子或按钮选照片，最多 9 张哦～</view>
+      </view>
+
+      <view class="field">
+        <view class="field-label">添加标签</view>
+        <view class="post-tags">
+          <view
+            wx:for="{{tags}}"
+            wx:key="label"
+            class="chip pink {{item.on ? 'on' : ''}}"
+            data-idx="{{index}}"
+            bindtap="onTagTap"
+            hover-class="btn-press"
+          >#{{item.label}}</view>
+        </view>
+      </view>
+
+      <button class="btn btn-primary btn-block publish-btn" hover-class="btn-press" bindtap="onPublish">
+        <view wx:if="{{busy}}" class="sun-spin ic ic-24" style="background-image:url('{{icons.sun}}');"></view>
+        <view wx:else class="ic ic-24" style="background-image:url('{{icons.heart}}');"></view>
+        <text>{{busy ? '正在发布' : '发布'}}</text>
+      </button>
+    </view>
+  </view>
+
+  <hearts id="hearts"></hearts>
+</view>

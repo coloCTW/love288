@@ -1,0 +1,45 @@
+<view class="page">
+  <view class="page-head">
+    <view class="head-sub">分享后会自动出现在我们的「日常」里</view>
+  </view>
+
+  <view class="card form-card">
+    <view class="row-between share-head">
+      <view class="share-title">选几张照片</view>
+      <view class="chip green">已选 {{picked}} / 9</view>
+    </view>
+    <view class="photo-strip">
+      <view
+        wx:for="{{slots}}"
+        wx:key="k"
+        class="photo-slot {{item.filled ? 'filled' : ''}}"
+        data-idx="{{index}}"
+        bindtap="onSlotTap"
+        hover-class="btn-press"
+      >
+        <block wx:if="{{item.filled}}">
+          <view class="filled-photo" style="background-image:url('{{item.uri || icons.bowl}}');"></view>
+          <view class="rm-photo" style="background-image:url('{{icons.check}}');"></view>
+        </block>
+        <block wx:else>
+          <view class="ic ic-30" style="background-image:url('{{icons.photo}}');"></view>
+          <text>第 {{index + 1}} 张</text>
+        </block>
+      </view>
+    </view>
+    <view class="photo-hint">点格子从相册或相机选照片，最多 9 张哦～</view>
+
+    <view class="field share-field">
+      <view class="field-label">写一句话</view>
+      <textarea class="textarea share-textarea" placeholder-class="ph" maxlength="60" value="{{content}}" bindinput="onContent"></textarea>
+    </view>
+
+    <button class="btn btn-primary btn-block send-btn" hover-class="btn-press" bindtap="onSend">
+      <view wx:if="{{busy}}" class="sun-spin ic ic-24" style="background-image:url('{{icons.sun}}');"></view>
+      <!-- <view wx:else class="ic ic-24" style="background-image:url('{{icons.heart}}');"></view> -->
+      <text>{{busy ? '正在发送' : '发送'}}</text>
+    </button>
+  </view>
+
+  <hearts id="hearts"></hearts>
+</view>

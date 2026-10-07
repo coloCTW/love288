@@ -1,0 +1,141 @@
+<view class="page stack tab-page-pad">
+  <view class="page-head">
+    <image src="../../images/eat-header.jpg" style="width: 100%; border-radius: 10%;" mode="widthFix"/>
+  </view>
+
+  <!-- 模块一：一键提醒 TA 吃饭 -->
+  <view class="card card-green eat-card" style="margin-top: 490rpx;">
+    <view class="remind-row">
+      <image src="../../images/eat-bell.png" class="bell-badge eat-bell {{shake ? 'shake' : ''}}"></image>
+      <view class="remind-main">
+        <view class="r-title">一键提醒吃饭</view>
+        <view class="r-sub">关心 TA，记得好好吃饭～</view>
+      </view>
+      <button class="btn {{remindBtn.cls}} btn-block remind-btn" hover-class="btn-press" bindtap="onRemind">
+      <!-- <view wx:if="{{remindBusy}}" class="sun-spin ic ic-24" style="background-image:url('{{icons.sun}}');"></view>
+      <view wx:else class="ic ic-24" style="background-image:url('{{icons.btnBell}}');"></view> -->
+      <text>{{remindBusy ? '正在提醒' : remindBtn.label}}</text>
+    </button>
+    </view>
+
+    <view class="remind-count">{{remindText}}
+    <image wx:if="{{remindBtn.cls === 'btn-soft'}}" src="../../assets/bobo/bo-star.png" style="width: 40rpx; height: 40rpx;" mode=""/>
+    </view>
+  </view>
+
+  <!-- 模块二：最近一次约饭 -->
+  <view class="card card-peach eat-card rel">
+    <view class="meal-kind">
+      <view class="k-left">
+        <image class="k-img" src="../../images/eat-panel.png" mode="widthFix"/>
+        <view class="remind-main" style="margin-left: 14rpx;">
+          <view class="r-title">约饭</view>
+          <view class="r-sub" style="font-weight: normal;">一起去吃好吃的吧～</view>
+        </view>
+      </view>
+      <view class="chip green meal-chip">{{meal ? meal.chip : '暂无'}}</view>
+    </view>
+    <view class="meal-main">
+      <view wx:if="{{meal}}" class="meal-block">
+        <view class="meal-date">
+          <image wx:if="{{meal.coverImage}}" src="{{meal.coverImage}}" mode="widthFix"/>
+          <view class="meal-detail">
+            <view class="meal-title">{{meal.kind}}</view>
+            <view class="meal-meta">
+              <view class="mm-item">
+                <text class="ic ic-19" style="background-image:url('{{icons.calendar}}');"></text>
+                <text>{{meal.dateLine}}</text>
+                <text class="ic ic-19" style="background-image:url('{{icons.clock}}'); margin-left: 14rpx; margin-right: -4rpx;"></text>
+                <text>{{meal.timeLine}}</text>
+              </view>
+              <view class="mm-item">
+                <view class="ic ic-19" style="background-image:url('{{icons.pin}}');"></view>
+                <text>{{meal.locLine}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="meal-note" wx:if="{{meal.note}}">
+          <image class="mn-avatar" src="{{icons.avLin}}" mode=""/>
+          <text>“{{meal.note}}”</text>
+        </view>
+      </view>
+      <view wx:else class="empty meal-empty meal-block">
+        <view class="e-ill">
+          <view class="avatar av-44" style="background-image:url('{{icons.avLin}}');"></view>
+          <view class="avatar av-44" style="background-image:url('{{icons.avSu}}');"></view>
+        </view>
+        <view class="e-title">还没有约饭</view>
+        <view class="e-sub">一起安排下一顿吧 ❤️</view>
+      </view>
+      <button class="btn btn-soft btn-block meal-add" hover-class="btn-press" bindtap="goAddMeal">
+        <view class="ic ic-24 plus" style="background-image:url('{{icons.plus}}');"></view>
+        <view style="font-size: 24rpx;">添加约饭</view>
+      </button>
+    </view>
+  </view>
+
+  <!-- 模块三：分享今日餐食 -->
+  <view class="card card-sun eat-card">
+    <view class="es-header">
+      <image src="../../images/eat-share.png" mode="widthFix"/>
+      <view>
+        <view class="card-title">分享今日餐食</view>
+        <view class="card-sub">把好吃的分享给 TA 吧～</view>
+      </view>
+      <button class="btn btn-soft btn-block share-go" hover-class="btn-press" bindtap="goShare">
+        <text>去分享</text>
+      </button>
+    </view>
+    <view class="share-box">
+      <block wx:if="{{hasTodayShare}}">
+        <view wx:for="{{todayShares}}" wx:key="id" class="share-item">
+          <view class="share-tiles">
+            <view
+              wx:for="{{item.tiles}}"
+              wx:for-item="tile"
+              wx:key="k"
+              class="p-photo"
+              style="background-image:url('{{tile.uri || icons.bowlTile}}');"
+            ></view>
+          </view>
+          <view class="share-content">“{{item.content}}”</view>
+          <view class="share-meta mono">{{item.meta}}</view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="photo-strip">
+          <view class="photo-slot">
+            <view class="ic ic-30" style="background-image:url('{{icons.photo}}');"></view>
+            <text>照片 1</text>
+          </view>
+          <view class="photo-slot">
+            <view class="ic ic-30" style="background-image:url('{{icons.photo}}');"></view>
+            <text>照片 2</text>
+          </view>
+          <view class="photo-slot">
+            <view class="ic ic-30" style="background-image:url('{{icons.photo}}');"></view>
+            <text>照片 3</text>
+          </view>
+        </view>
+        <view class="photo-hint">还没有分享，拍下今天的美食发给 TA 吧</view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 历史餐食 -->
+  <!-- <view class="history-sec">
+    <view class="row-between history-head">
+      <view class="history-title">历史餐食</view>
+      <view class="chip sun">{{historyCount}} 顿</view>
+    </view>
+    <scroll-view scroll-x class="h-strip" wx:if="{{history.length}}">
+      <view class="h-item" wx:for="{{history}}" wx:key="id">
+        <view class="h-photo" style="background-image:url('{{item.photo || icons.bowlTile}}');"></view>
+        <view class="h-cap">{{item.cap}}</view>
+        <view class="h-at mono">{{item.at}}</view>
+      </view>
+    </scroll-view>
+    <view wx:else class="history-empty">还没有历史餐食，从今天开始记录吧～</view>
+  </view> -->
+</view>

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "约会详情",
+  "usingComponents": {
+    "sheet": "/components/sheet/sheet",
+    "confirm": "/components/confirm/confirm"
+  }
+}

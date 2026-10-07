@@ -1,0 +1,696 @@
+/* ═══════════════════════════════════════════════════════════════════
+   两个人的小世界 · 全局设计系统
+   暖纸风 token + 共享工具类（移植自原型 shared/css/app.css）
+   color-mix 不可用：所有派生色已在下方预解析为静态 hex
+   ═══════════════════════════════════════════════════════════════════ */
+
+page {
+  /* 基础色 */
+  --bg: #f0f0e0;
+  --surface: #f0e0d0;
+  --fg: #504040;
+  --muted: #75675c;
+  --border: #e3d8c6;
+  --accent: #ee9a83;
+  --pink: #f0a9b0;
+  --blue: #a9c1de;
+  --green: #a8c7a0;
+  --sun: #efc97e;
+  --danger: #c96f5e;
+  /* ink 变体 */
+  --accent-ink: #876057;
+  --pink-ink: #806062;
+  --blue-ink: #6b676f;
+  --green-ink: #6a695d;
+  --sun-ink: #806953;
+  /* 纸张卡 */
+  --paper: #f7f7ee;
+  --paper-peach: #f0e0d0;
+  --paper-pink: #f0d0ca;
+  --paper-blue: #d0dbdf;
+  --paper-green: #d2dfc5;
+  --paper-sun: #f0deb4;
+  /* soft 底 */
+  --accent-soft: #f0dfcd;
+  --pink-soft: #f0e0d5;
+  --blue-soft: #dde4e0;
+  --green-soft: #dde5cf;
+  --sun-soft: #f0e3bf;
+  --fg-soft: #e8e7d8;
+  /* 手写标题（马善政体离线不可用 → 楷体回退） */
+  --font-display: 'Ma Shan Zheng', 'Kaiti', 'STKaiti', 'KaiTi', cursive;
+
+  background: #f0f0e0;
+  color: #504040;
+  font-size: 28rpx;
+  line-height: 1.6;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+}
+
+/* ── 基础重置（WXSS 无 * 选择器，显式列出元素） ─────────────────── */
+view, text, button, input, textarea, image, picker, switch, scroll-view {
+  box-sizing: border-box;
+}
+
+button {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border-radius: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-align: inherit;
+  overflow: visible;
+}
+
+button::after {
+  border: none;
+}
+
+/* ── 布局 ────────────────────────────────────────────────────────── */
+.page {
+  padding: 12rpx 32rpx 56rpx;
+  min-height: 100vh;
+}
+
+.tab-page-pad {
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rel {
+  position: relative;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-head {
+  padding: 20rpx 4rpx 8rpx;
+}
+
+.hand {
+  font-family: var(--font-display);
+  font-size: 52rpx;
+  line-height: 1.35;
+  color: var(--fg);
+}
+
+.head-sub {
+  font-size: 25rpx;
+  color: var(--muted);
+  margin-top: 6rpx;
+}
+
+.mono {
+  font-family: ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 卡片 ────────────────────────────────────────────────────────── */
+.card {
+  background: var(--paper);
+  border-radius: 40rpx;
+  padding: 32rpx;
+  box-shadow: 0 6rpx 20rpx rgba(128, 128, 115, 0.10), 0 2rpx 4rpx rgba(128, 128, 115, 0.08);
+}
+
+.card-peach { background: var(--paper-peach); }
+.card-pink { background: var(--paper-pink); }
+.card-blue { background: var(--paper-blue); }
+.card-green { background: var(--paper-green); }
+.card-sun { background: var(--paper-sun); }
+.card-flat { box-shadow: none; }
+
+.card-title {
+  font-size: 29rpx;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.card-sub {
+  font-size: 24rpx;
+  color: var(--muted);
+  margin-top: 4rpx;
+}
+
+.card-foot {
+  font-size: 22rpx;
+  color: var(--muted);
+  border-top: 2rpx dashed var(--border);
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+}
+
+/* ── 按钮（:active → hover-class="btn-press"） ───────────────────── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  min-height: 88rpx;
+  padding: 0 32rpx;
+  border-radius: 28rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--fg);
+  background: var(--paper);
+}
+
+.btn-press {
+  transform: scale(0.96);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #3e3232;
+  box-shadow: 0 8rpx 24rpx rgba(238, 154, 131, 0.45);
+}
+
+.btn-soft {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.btn-ghost {
+  background: var(--paper);
+  border: 2rpx solid var(--border);
+  color: var(--fg);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff7f2;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-sm {
+  min-height: 72rpx;
+  font-size: 26rpx;
+  padding: 0 24rpx;
+  border-radius: 24rpx;
+}
+
+.btn[disabled],
+.btn.disabled {
+  opacity: 0.65;
+}
+
+/* 按钮内小太阳 loading */
+.sun-spin {
+  display: inline-block;
+  animation: sun-spin 0.8s linear infinite;
+}
+
+/* ── chips / 标签 ─────────────────────────────────────────────────── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2rpx 20rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  line-height: 1.7;
+  background: var(--fg-soft);
+  color: var(--muted);
+}
+
+.chip.pink { background: var(--pink-soft); color: var(--pink-ink); }
+.chip.green { background: var(--green-soft); color: var(--green-ink); }
+.chip.blue { background: var(--blue-soft); color: var(--blue-ink); }
+.chip.sun { background: var(--sun-soft); color: var(--sun-ink); }
+
+/* 可点选的标签（发布日常） */
+.chip.on {
+  background: var(--pink-ink);
+  color: #fdf6f0;
+}
+
+/* ── 图标（SVG data-URI 背景） ───────────────────────────────────── */
+.ic {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.ic-14 { width: 28rpx; height: 28rpx; }
+.ic-19 { width: 38rpx; height: 38rpx; }
+.ic-22 { width: 44rpx; height: 44rpx; }
+.ic-24 { width: 48rpx; height: 48rpx; }
+.ic-30 { width: 60rpx; height: 60rpx; }
+.ic-34 { width: 68rpx; height: 68rpx; }
+.ic-40 { width: 80rpx; height: 80rpx; }
+.ic-46 { width: 92rpx; height: 92rpx; }
+.ic-52 { width: 104rpx; height: 104rpx; }
+.ic-62 { width: 124rpx; height: 124rpx; }
+.ic-84 { width: 168rpx; height: 168rpx; }
+
+/* ── 头像（SVG data-URI 背景） ───────────────────────────────────── */
+.avatar {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+  border-radius: 999rpx;
+  flex-shrink: 0;
+}
+
+.av-26 { width: 52rpx; height: 52rpx; }
+.av-34 { width: 68rpx; height: 68rpx; }
+.av-40 { width: 80rpx; height: 80rpx; }
+.av-42 { width: 84rpx; height: 84rpx; }
+.av-44 { width: 88rpx; height: 88rpx; }
+.av-48 { width: 96rpx; height: 96rpx; }
+.av-56 { width: 112rpx; height: 112rpx; }
+.av-62 { width: 124rpx; height: 124rpx; }
+
+/* ── 提醒行（首页 / 好好吃饭共用） ───────────────────────────────── */
+.remind-row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.bell-badge {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 28rpx;
+  background-color: var(--sun-soft);
+  background-repeat: no-repeat;
+  background-size: 56% 56%;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.remind-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.r-title {
+  display: block;
+  font-size: 29rpx;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.r-sub {
+  display: block;
+  font-size: 23rpx;
+  color: var(--muted);
+  margin-top: 4rpx;
+}
+
+.go-arrow {
+  opacity: 0.6;
+}
+
+.shake {
+  animation: bell-shake 0.5s ease-in-out;
+}
+
+/* ── 心情脸容器（tint 底色 + 脸 SVG 背景） ───────────────────────── */
+.mood-face {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+  border-radius: 999rpx;
+  flex-shrink: 0;
+}
+
+.mood-face.tint-peach { background-color: var(--paper-peach); }
+.mood-face.tint-pink { background-color: var(--pink-soft); }
+.mood-face.tint-blue { background-color: var(--blue-soft); }
+.mood-face.tint-green { background-color: var(--green-soft); }
+.mood-face.tint-sun { background-color: var(--sun-soft); }
+.mood-face.tint-paper { background-color: var(--paper); }
+
+/* ── 表单 ────────────────────────────────────────────────────────── */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.field-label {
+  font-size: 25rpx;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.req {
+  color: var(--danger);
+}
+
+.field-row {
+  display: flex;
+  gap: 20rpx;
+}
+
+.field-row .field {
+  flex: 1;
+}
+
+.input {
+  background: var(--paper);
+  border: 2rpx solid var(--border);
+  border-radius: 26rpx;
+  padding: 20rpx 24rpx;
+  font-size: 29rpx;
+  min-height: 88rpx;
+  color: var(--fg);
+  width: 100%;
+}
+
+.textarea {
+  background: var(--paper);
+  border: 2rpx solid var(--border);
+  border-radius: 26rpx;
+  padding: 20rpx 24rpx;
+  font-size: 29rpx;
+  color: var(--fg);
+  width: 100%;
+  min-height: 150rpx;
+}
+
+.ph {
+  color: #b8aa99;
+}
+
+/* picker 与 .input 同观感 */
+.picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--paper);
+  border: 2rpx solid var(--border);
+  border-radius: 26rpx;
+  padding: 20rpx 24rpx;
+  min-height: 88rpx;
+  font-size: 29rpx;
+  color: var(--fg);
+}
+
+.picker .ph {
+  color: #b8aa99;
+}
+
+.f-err {
+  display: none;
+  font-size: 22rpx;
+  color: var(--danger);
+}
+
+.field.invalid .f-err {
+  display: block;
+}
+
+.field.invalid .input,
+.field.invalid .textarea,
+.field.invalid .picker {
+  border-color: var(--danger);
+}
+
+/* 类型三选（添加约会：约会/纪念日/其他） */
+.type-pick {
+  display: flex;
+  gap: 16rpx;
+}
+
+.type-opt {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  min-height: 84rpx;
+  border-radius: 24rpx;
+  background: var(--paper);
+  border: 2rpx solid var(--border);
+  font-size: 27rpx;
+  color: var(--muted);
+  position: relative;
+}
+
+.type-opt.on {
+  border-color: var(--accent-ink);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+.type-opt .t-dot {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 999rpx;
+  background: var(--accent);
+  display: none;
+}
+
+.type-opt.on .t-dot {
+  display: block;
+}
+
+/* ── 设置行（profile / 提醒弹层共用） ─────────────────────────────── */
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 22rpx 0;
+}
+
+.setting-row + .setting-row {
+  border-top: 2rpx dashed var(--border);
+}
+
+.s-ic {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-soft);
+  background-repeat: no-repeat;
+  background-size: 48% 48%;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.s-ic.green { background-color: var(--green-soft); }
+.s-ic.pink { background-color: var(--pink-soft); }
+.s-ic.blue { background-color: var(--blue-soft); }
+.s-ic.sun { background-color: var(--sun-soft); }
+
+.s-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.s-title {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.s-sub {
+  font-size: 23rpx;
+  color: var(--muted);
+  margin-top: 2rpx;
+}
+
+switch {
+  transform: scale(0.9);
+}
+
+/* ── 空态 ────────────────────────────────────────────────────────── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 56rpx 32rpx;
+  gap: 14rpx;
+}
+
+.e-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.e-sub {
+  font-size: 24rpx;
+  color: var(--muted);
+}
+
+/* ── 照片占位宫格 ────────────────────────────────────────────────── */
+.photo-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+}
+
+.photo-slot {
+  position: relative;
+  width: calc((100% - 28rpx) / 3);
+  height: 196rpx;
+  border: 3rpx dashed var(--border);
+  border-radius: 28rpx;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  color: var(--muted);
+  font-size: 22rpx;
+}
+
+.photo-slot.filled {
+  background: var(--sun-soft);
+  border-style: solid;
+  border-color: transparent;
+}
+
+.photo-slot.pink-filled {
+  background: var(--pink-soft);
+  border-style: solid;
+  border-color: transparent;
+}
+
+.rm-photo {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 999rpx;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-hint {
+  font-size: 22rpx;
+  color: var(--muted);
+  margin-top: 14rpx;
+}
+
+/* ── 动画 ────────────────────────────────────────────────────────── */
+@keyframes mood-bounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes heart-pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bell-shake {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-12deg); }
+  40% { transform: rotate(10deg); }
+  60% { transform: rotate(-6deg); }
+  80% { transform: rotate(4deg); }
+}
+
+@keyframes throb {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@keyframes sun-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes heart-fly {
+  from {
+    transform: translate(0, 0) rotate(0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+    opacity: 0;
+  }
+}
+
+@keyframes cal-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16rpx);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fade-up {
+  animation: fade-up 0.3s ease-out both;
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}

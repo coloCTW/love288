@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>添加约会 · 两个人的小世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/css/app.css" />
+</head>
+<body>
+  <div class="phone">
+    <header class="wx-nav" data-od-id="add-date-nav">
+      <button class="nav-back" id="btn-back" aria-label="返回"><svg class="ic"><use href="#ic-back"></use></svg></button>
+      <span class="nav-title">添加约会</span>
+      <div class="wx-capsule" aria-hidden="true">
+        <span class="caps-item"><svg class="ic-dots"><use href="#ic-dots"></use></svg></span>
+        <span class="caps-divider"></span>
+        <span class="caps-item"><svg class="ic-ring"><use href="#ic-ring"></use></svg></span>
+      </div>
+    </header>
+
+    <main class="page" data-od-id="add-date-page">
+      <div class="page-head">
+        <p class="hand">创建一个约会 <span class="heart-txt">❤️</span></p>
+        <p class="head-sub">保存后会自动出现在月历上</p>
+      </div>
+
+      <section class="card" data-od-id="add-date-form">
+        <form class="form-stack" id="date-form" novalidate>
+          <div class="field" id="fld-title">
+            <label for="f-title">约会名称<span class="req">*</span></label>
+            <input class="input" id="f-title" type="text" placeholder="比如：一起吃火锅、去看海…" />
+            <span class="f-err">还没有写名称哦，给这个日子起个名字吧～</span>
+          </div>
+          <div class="field-row">
+            <div class="field" id="fld-date">
+              <label for="f-date">日期<span class="req">*</span></label>
+              <input class="input" id="f-date" type="date" />
+              <span class="f-err">还没有选日期哦～</span>
+            </div>
+            <div class="field">
+              <label for="f-time">时间</label>
+              <input class="input" id="f-time" type="time" value="19:00" />
+            </div>
+          </div>
+          <div class="field" id="fld-loc">
+            <label for="f-loc">地点<span class="req">*</span></label>
+            <input class="input" id="f-loc" type="text" placeholder="比如：海底捞（陆家嘴店）" />
+            <span class="f-err">地点还没有填哦，先想想去哪里～</span>
+          </div>
+          <div class="field">
+            <label for="f-city">城市</label>
+            <select class="input" id="f-city">
+              <option value="上海市">上海市</option>
+              <option value="北京市">北京市</option>
+              <option value="青岛市">青岛市</option>
+              <option value="杭州市">杭州市</option>
+              <option value="成都市">成都市</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-note">备注</label>
+            <textarea class="textarea" id="f-note" style="min-height:72px" placeholder="想记下什么都可以～"></textarea>
+          </div>
+          <div class="field">
+            <label>图片（选填）</label>
+            <div class="photo-strip" style="grid-template-columns:repeat(3,1fr)">
+              <button type="button" class="photo-slot" id="date-photo" aria-label="添加图片">
+                <span class="slot-inner"><svg class="ic"><use href="#ic-photo"></use></svg><span>添加图片</span></span>
+              </button>
+            </div>
+          </div>
+          <div class="field">
+            <label>类型</label>
+            <div class="type-pick" id="type-pick">
+              <button type="button" class="type-opt on" data-type="date"><svg class="ic"><use href="#ic-heart"></use></svg>约会</button>
+              <button type="button" class="type-opt" data-type="anniversary"><svg class="ic"><use href="#ic-star-fill"></use></svg>纪念日</button>
+              <button type="button" class="type-opt" data-type="todo"><svg class="ic"><use href="#ic-flower"></use></svg>其他</button>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit" id="btn-save" style="min-height:50px;font-size:15.5px;margin-top:4px">
+            <svg class="ic"><use href="#ic-heart-fill"></use></svg>保存约会
+          </button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/app.js"></script>
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var evType = 'date';
+
+      $('f-date').value = Store.addDays(7);
+
+      /* 图片插槽（选填，原型以插画占位） */
+      var datePhotoOn = false;
+      $('date-photo').addEventListener('click', function () {
+        datePhotoOn = !datePhotoOn;
+        if (datePhotoOn) {
+          this.classList.add('filled');
+          this.innerHTML = '<span style="position:absolute;inset:0;display:grid;place-items:center;background:var(--paper-pink);color:var(--pink-ink)">' + Icon('ic-flower') + '</span>' +
+            '<button type="button" class="rm-photo" aria-label="移除图片">' + Icon('ic-check') + '</button>';
+          this.querySelector('.rm-photo').addEventListener('click', function (e) { e.stopPropagation(); datePhotoOn = false; });
+        } else {
+          this.classList.remove('filled');
+          this.innerHTML = '<span class="slot-inner">' + Icon('ic-photo') + '<span>添加图片</span></span>';
+        }
+      });
+
+      /* 类型单选 */
+      $('type-pick').addEventListener('click', function (e) {
+        var opt = e.target.closest('.type-opt');
+        if (!opt) return;
+        evType = opt.getAttribute('data-type');
+        var opts = $('type-pick').querySelectorAll('.type-opt');
+        for (var i = 0; i < opts.length; i++) {
+          opts[i].classList.toggle('on', opts[i] === opt);
+          opts[i].setAttribute('aria-pressed', opts[i] === opt ? 'true' : 'false');
+        }
+      });
+
+      function markInvalid(fieldId, on) {
+        var fld = $(fieldId);
+        fld.classList.toggle('invalid', on);
+        var input = fld.querySelector('.input');
+        if (input) input.classList.toggle('invalid', on);
+      }
+
+      $('date-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var title = $('f-title').value.trim();
+        var date = $('f-date').value;
+        var loc = $('f-loc').value.trim();
+        markInvalid('fld-title', !title);
+        markInvalid('fld-date', !date);
+        markInvalid('fld-loc', !loc);
+        if (!title || !date || !loc) {
+          UI.toast('还有必填项没有填哦，检查一下～', '🌷');
+          return;
+        }
+        UI.withSun($('btn-save'), 800, '正在保存', function () {
+          Store.commit(function (s) {
+            s.events.push({
+              id: Store.uid('ev'), creatorId: s.me.id,
+              title: title, type: evType,
+              date: date, time: $('f-time').value,
+              city: $('f-city').value, location: loc,
+              note: $('f-note').value.trim()
+            });
+          });
+          UI.flyHearts($('btn-save'), 8);
+          var msg = evType === 'anniversary' ? '纪念日已收藏 ⭐' : evType === 'todo' ? '已记下这件小事 🌸' : '好啦，约定完成 ❤️';
+          UI.toast(msg, evType === 'anniversary' ? '⭐' : '❤️');
+          setTimeout(function () { location.href = '08-plan.html'; }, 1200);
+        });
+      });
+
+      $('btn-back').addEventListener('click', function () { UI.back('08-plan.html'); });
+    })();
+  </script>
+</body>
+</html>

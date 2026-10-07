@@ -1,0 +1,436 @@
+/* 首页 · 页面专属样式（共享类见 app.wxss） */
+@import "../../iconfont.wxss";
+/* A. 情侣主卡 */
+.couple-hero {
+  text-align: center;
+  padding: 44rpx 32rpx 36rpx;
+  height: 634rpx;
+  border-radius: 60rpx;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  background-image: url('https://bee-reg-ab.imagency.cn/mr/6511/26/4c6feeaf191ed4f11462e0cca23f2b4b.jpg');
+}
+
+.days {
+  margin-top: 130rpx;
+  margin-right: 10rpx;
+}
+
+.days-caption-top {
+  font-family: 'PingFang SC', 'Source Han Sans SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  font-size: 22rpx;
+  font-weight: 500;
+  /* color: var(--muted); */
+  color: #fff;
+}
+
+.days-num-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.num {
+  font-size: 76rpx;
+  font-weight: 800;
+  color: #fff;
+  line-height: 0.95;
+  letter-spacing: -1px;
+  font-family: ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.day-tag {
+  font-size: 24rpx;
+  letter-spacing: 2rpx;
+  /* color: var(--muted); */
+  color: #fff;
+  font-weight: 500;
+  font-family: 'PingFang SC', 'Source Han Sans SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+}
+
+.duo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 288rpx;
+  margin-top: -88rpx;
+}
+
+.duo-side {
+  display: flex;
+  width: 200rpx;
+  height: 200rpx;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.who {
+  font-weight: 700;
+  font-size: 26rpx;
+  color: var(--fg);
+}
+
+.heart-between {
+  width: 44rpx;
+  height: 44rpx;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  animation: throb 2.2s ease-in-out infinite;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12rpx;
+  position: absolute;
+  top: 60%;
+  left: 43%;
+}
+
+.m-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  color: var(--fg);
+}
+
+.m-chip.dist {
+  color: #8e664c;
+  font-weight: 600;
+}
+
+.batt-left {
+  position: absolute;
+  top: 79.8%;
+  left: 14%;
+}
+
+.batt-right {
+  position: absolute;
+  top: 79.8%;
+  left: 67%;
+}
+
+.batt-out {
+  width: 44rpx;
+  height: 27rpx;
+  position: relative;
+  font-size: 40rpx;
+  border: 5rpx solid #f2eeee;
+  border-radius: 10rpx;
+  /* color: #f2eeee; */
+}
+
+.batt-out::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -8rpx;              /* 负值，推到主体右侧外面 */
+  transform: translateY(-50%);
+  width: 5rpx;
+  height: 10rpx;
+  border: 4rpx solid #f2eeee;
+  border-left: 0;
+  border-radius: 0 6rpx 6rpx 0;  /* 右侧圆角，像凸起 */
+}
+
+.batt-track {
+  width: 32rpx;
+  height: 70%;
+  position: absolute;
+  top: 50%;
+  left: calc(50% - 16rpx);
+  transform: translateY(-50%);
+}
+
+.batt-fill {
+  height: 100%;
+  border-radius: 4rpx;
+}
+
+.batt-fill.ok {
+  background: #f2eeee;
+}
+
+.batt-fill.low {
+  background: var(--danger);
+}
+
+.batt-num {
+  font-size: 22rpx;
+  color: #f2eeee;
+  font-variant-numeric: tabular-nums;
+  margin-left: 14rpx;
+  font-weight: 600;
+}
+
+.batt-name {
+  font-size: 24rpx;
+  color: #735647;
+  font-weight: 600;
+  font-family: 'PingFang SC', 'Source Han Sans SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+}
+
+.batt-name .name-left {
+  position: absolute;
+  width: 160rpx;
+  left: 10.7%;
+  bottom: 6.3%;
+}
+
+.batt-name .name-right {
+  position: absolute;
+  width: 160rpx;
+  right: 13.5%;
+  bottom: 6%;
+}
+
+.card-foot {
+  margin-top: 150rpx;
+}
+/* B. 天气 */
+.weather-row {
+  display: flex;
+  gap: 28rpx;
+}
+
+.weather-cell {
+  flex: 1;
+  padding: 24rpx;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.w-above {
+  display: flex;
+  justify-content: space-between;  /* 两端对齐，中间留空 */
+  align-items: center;   /* 垂直居中，可选 */
+}
+
+.w-address {
+  display: flex;
+  align-items: center;
+  color: var(--blue-ink);
+}
+
+.w-city {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--blue-ink);
+}
+
+.w-blue {
+  border: 4rpx solid #7cb4ad;
+  background: #f7f9f5;
+}
+
+.w-sun {
+  border: 4rpx solid #f9c675;
+  background: #fdf6e9;
+}
+.w-sun .w-address {
+  color: var(--sun-ink);
+}
+.w-sun .w-city {
+  color: var(--sun-ink);
+}
+
+.w-main {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 8rpx;
+}
+
+.w-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 10rpx;
+}
+
+.w-icon image {
+  width: 100%;
+  height: 100%;
+}
+
+.w-detail {
+  display: flex;
+  align-items: baseline;   /* 垂直居中，可选 */
+}
+
+.w-temp {
+  font-size: 50rpx;
+  font-weight: 700;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.w-cond {
+  font-size: 25rpx;
+  color: var(--fg);
+}
+
+.w-range {
+  font-size: 23rpx;
+  color: var(--muted);
+}
+
+.w-updated {
+  font-size: 21rpx;
+  color: var(--muted);
+}
+
+/* C. 贴心提醒入口（remind-row 等共享类见 app.wxss） */
+.remind-row {
+  padding: 28rpx 32rpx;
+  width: 100%;
+  background: #fef8ed;
+  border: 4rpx solid #f3dbb9;
+}
+.clock {
+  margin-right: 20rpx;
+  background: none;
+}
+
+.clock image {
+  width: 100%;
+  height: 100%;
+}
+
+/* D. 同步心情 */
+.mood-row {
+  display: flex;
+  gap: 28rpx;
+}
+
+.mood-card {
+  position: relative;
+  display: flex;
+  height: 210rpx;          /* 父容器要有高度，否则垂直居中无意义 */
+  border-radius: 26rpx;
+  box-shadow: 0 0 0 4rpx rgba(255, 255, 255, 0.8);  /* spread 做边框 */
+  flex: 1;
+}
+.mcard-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  padding: 20rpx 0;
+}
+
+.m-pic {
+  width: 170rpx;
+  height: 170rpx;
+  border-radius: 20%;
+  margin: 22rpx 0 0 12rpx;
+}
+
+.m-update {
+  font-size: 20rpx;
+  font-weight: bolder;
+  text-align: center;
+  border-radius: 20rpx;
+  color: var(--fg);
+}
+
+.mood-card button {
+  width: 130rpx;
+  min-height: 60rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--accent-ink);
+  padding: 0;
+}
+
+.mood-ta .mood-quick {
+  position: absolute;
+  bottom: 10rpx;
+}
+
+
+.mood-ta button {
+  width: 130rpx;
+  min-height: 50rpx;
+  background: rgba(255, 255, 255, 0.5);
+  border: 2rpx solid var(--border);
+}
+
+
+
+.mood-face-58 {
+  width: 116rpx;
+  height: 116rpx;
+}
+
+.mood-head {
+  margin-bottom: 20rpx;
+}
+
+.chip-today {
+  font-weight: 700;
+}
+
+.mood-now {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.mood-now-2 {
+  margin-top: 24rpx;
+}
+
+.mood-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.m-line {
+  font-size: 27rpx;
+  color: var(--fg);
+}
+
+.m-at {
+  font-size: 23rpx;
+  color: var(--muted);
+  margin-top: 4rpx;
+}
+
+.mood-quick {
+  display: flex;
+  gap: 14rpx;
+  margin-top: 12rpx;
+}
+
+.mood-edit {
+  margin-top: 24rpx;
+}
+
+/* E. 想你了 */
+.miss-btn {
+  min-height: 104rpx;
+  font-size: 32rpx;
+  border-radius: 32rpx;
+}
+
+.miss-caption {
+  text-align: center;
+  font-size: 23rpx;
+  color: var(--muted);
+  margin-top: 12rpx;
+}
+
+/* 弹层内按钮 */
+.sheet-set {
+  margin-top: 28rpx;
+}

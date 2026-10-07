@@ -1,0 +1,33 @@
+<view class="page stack">
+  <image src="../../images/m-bg.jpg" mode=""/>
+  <view class="page-head">
+    <view class="hand">今天的心情是？</view>
+    <view class="head-sub">选一个，轻轻告诉 TA 吧 ❤️</view>
+  </view>
+
+  <view class="mood-grid">
+    <view
+      wx:for="{{moods}}"
+      wx:key="type"
+      class="mood-cell {{item.selected ? 'selected' : ''}} {{item.bounce ? 'bounce' : ''}}"
+      data-type="{{item.type}}"
+      bindtap="onPick"
+      hover-class="btn-press"
+    >
+      <image src="{{item.face}}"/>
+      <view class="check-dot" style="background-image:url('{{checkIcon}}');"></view>
+      <!-- <view class="mood-face mood-face-52 {{item.tint}}" style="background-image:url('{{item.face}}');"></view>
+      <view class="m-name">{{item.type}}</view> -->
+    </view>
+  </view>
+
+  <view class="mood-tip">一天只保留一个心情，随时可以改～</view>
+
+  <button class="btn btn-primary btn-block mood-confirm" hover-class="btn-press" bindtap="onConfirm">
+    <view wx:if="{{busy}}" class="sun-spin ic ic-24" style="background-image:url('{{sunIcon}}');"></view>
+    <!-- <text>{{busy ? '正在同步' : '确定选择'}}</text> -->
+    <image src="../../images/mood-button.jpg" alt=""/>
+  </button>
+
+  <hearts id="hearts"></hearts>
+</view>

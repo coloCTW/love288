@@ -1,0 +1,5 @@
+# 跨平台换行符安全
+* text=auto
+*.png binary
+*.jpg binary
+*.woff2 binary

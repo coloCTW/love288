@@ -1,0 +1,30 @@
+.tab-bar {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  height: 150rpx;
+  background: #fdf8ef;
+  display: flex;
+  flex-direction: row;
+  padding-bottom: env(safe-area-inset-bottom);
+  pointer-events: auto;
+  align-items: center;
+  padding-bottom: 10rpx;
+  border: 1px solid #e9dbcc;
+}
+
+.tab-bar-item {
+  flex: 1;                /* 关键：每个子项平分剩余空间 */
+  display: flex;          /* 让图标和文字在 tab 内部垂直排列 */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0; 
+  font-size: 22rpx;
+}
+
+.tab-bar-item image {
+  width: 60rpx;
+  height: 60rpx;
+}

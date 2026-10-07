@@ -1,0 +1,11 @@
+{
+  "name": "love288-api",
+  "version": "1.0.0",
+  "description": "两个人的小世界 · 业务云函数（event.type 路由）",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "~2.4.0"
+  }
+}

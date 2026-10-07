@@ -1,0 +1,8 @@
+<view class="hearts-layer" wx:if="{{hearts.length}}">
+  <view
+    wx:for="{{hearts}}"
+    wx:key="id"
+    class="fly-heart"
+    style="left:{{item.left}};top:{{item.top}};width:{{item.sz}};height:{{item.sz}};--dx:{{item.dx}};--dy:{{item.dy}};--rot:{{item.rot}};animation-duration:{{item.dur}};background-image:url('{{item.uri}}');"
+  ></view>
+</view>

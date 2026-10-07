@@ -1,0 +1,8 @@
+{
+  "navigationStyle":"custom",
+  "usingComponents": {
+    "sheet": "/components/sheet/sheet",
+    "confirm": "/components/confirm/confirm",
+    "hearts": "/components/hearts/hearts"
+  }
+}

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>两个人的小世界 · 情侣微信小程序原型总览</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared/css/app.css" />
+  <style>
+    /* 总览画廊专用样式（token 沿用 app.css，不新增裸色值） */
+    .g-page {
+      min-height: 100dvh;
+      display: block;
+      background:
+        radial-gradient(110% 50% at 50% -8%, var(--pink-soft) 0%, transparent 55%),
+        radial-gradient(100% 45% at 90% 20%, var(--blue-soft) 0%, transparent 50%),
+        var(--bg);
+    }
+    .g-page::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: var(--grain);
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .g-wrap { position: relative; z-index: 2; max-width: 1340px; margin: 0 auto; padding: 64px 32px 80px; }
+    .g-hero { display: grid; grid-template-columns: 1.1fr auto; gap: 56px; align-items: center; }
+    .g-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(44px, 6vw, 72px);
+      line-height: 1.15;
+      letter-spacing: 0.02em;
+      margin: 0;
+    }
+    .g-hero h1 .dot { color: var(--pink-ink); }
+    .g-hero .g-lead {
+      margin-top: 20px;
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 52ch;
+    }
+    .g-hero .g-chips { display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
+    .g-hero .g-hero-frame { position: relative; }
+    .g-hero .g-hero-frame .f-note {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      bottom: 18px;
+      background: var(--fg);
+      color: var(--paper);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 999px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .g-section { margin-top: 72px; }
+    .g-section .g-title { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+    .g-section .g-title h2 { font-family: var(--font-display); font-size: 30px; letter-spacing: 0.02em; margin: 0; }
+    .g-section .g-title .g-en { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
+    .g-section .g-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+    .g-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 40px 28px; justify-items: center; }
+    .g-card {
+      width: 100%;
+      max-width: 430px;
+      background: var(--paper);
+      border: 1.5px solid var(--border);
+      border-radius: 28px;
+      padding: 20px;
+      box-shadow: var(--shadow-paper);
+    }
+    .g-card iframe { width: 390px; height: 844px; border: 0; display: block; margin: 0 auto; border-radius: 12px; }
+    .g-card figcaption { padding: 16px 6px 2px; }
+    .g-card .cap-head { display: flex; align-items: center; gap: 10px; }
+    .g-card .cap-name { font-size: 16px; font-weight: 700; }
+    .g-card .cap-frame { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+    .g-card .cap-hints { margin-top: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.75; }
+    .g-card .cap-hints b { color: var(--accent-ink); font-weight: 600; }
+    .g-notes {
+      margin-top: 72px;
+      background: var(--paper);
+      border: 1.5px solid var(--border);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow-paper);
+    }
+    .g-notes h2 { font-family: var(--font-display); font-size: 26px; margin: 0 0 16px; }
+    .g-notes ul { margin: 0; padding-left: 20px; color: var(--muted); font-size: 14px; line-height: 2; }
+    .g-notes li b { color: var(--fg); font-weight: 600; }
+    .g-notes .n-foot { margin-top: 18px; padding-top: 16px; border-top: 1.5px dashed var(--border); font-size: 12.5px; color: var(--muted); line-height: 1.9; }
+    @media (max-width: 980px) {
+      .g-hero { grid-template-columns: 1fr; }
+      .g-hero-frame { display: none; }
+    }
+    @media (max-width: 520px) {
+      .g-wrap { padding: 40px 16px 60px; }
+      .g-card { padding: 12px; }
+      .g-card iframe { width: 100%; height: 78vh; }
+    }
+  </style>
+</head>
+<body class="g-page">
+  <div class="g-wrap">
+    <!-- 头部：一句话说明 -->
+    <header class="g-hero" data-od-id="gallery-hero">
+      <div>
+        <p class="eyebrow" style="color:var(--accent-ink)">情侣微信小程序 · 高保真可交互原型</p>
+        <h1>两个人的<br />小世界<span class="dot"> ❤️</span></h1>
+        <p class="g-lead">
+          只属于一对情侣的私密空间：同步心情、提醒吃饭、约饭、记录日常、计划见面。
+          共 11 个屏幕，四大 Tab 共享同一份数据——在任何一个屏幕里的操作，都会实时流动到其他屏幕。
+        </p>
+        <div class="g-chips">
+          <span class="chip pink">数据四 Tab 联动</span>
+          <span class="chip green">11 个屏幕</span>
+          <span class="chip blue">微信小程序规范</span>
+          <span class="chip sun">恋爱手账风格</span>
+        </div>
+      </div>
+      <div class="g-hero-frame">
+        <iframe src="frames/iphone-15-pro.html?screen=../screens/01-home.html" width="390" height="844" title="首页预览" style="border:0;border-radius:56px"></iframe>
+        <span class="f-note">从这里开始 — 首页</span>
+      </div>
+    </header>
+
+    <!-- 主界面 -->
+    <section class="g-section" data-od-id="gallery-tabs">
+      <div class="g-title">
+        <h2>主界面 · 四大 Tab</h2>
+        <span class="g-en">TABS</span>
+      </div>
+      <p class="g-sub">底部导航固定四项：首页 / 好好吃饭 / 日常 / 计划，页面间互相跳转，数据实时同步。</p>
+      <div class="g-grid">
+        <figure class="g-card">
+          <iframe src="frames/iphone-15-pro.html?screen=../screens/01-home.html" width="390" height="844" loading="lazy" title="首页"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">首页</span><span class="cap-frame">iPhone 15 Pro</span></div>
+            <p class="cap-hints"><b>想你了</b>爱心飞出；恋爱天数实时计算；<b>贴心提醒</b>弹层可设置；<b>同步心情</b>看彼此状态并抱抱 TA；点头像进「我的设置」</p>
+          </figcaption>
+        </figure>
+        <figure class="g-card">
+          <iframe src="frames/android-pixel.html?screen=../screens/03-eat.html" width="390" height="844" loading="lazy" title="好好吃饭"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">好好吃饭</span><span class="cap-frame">Android Pixel</span></div>
+            <p class="cap-hints"><b>提醒 TA</b>铃铛摇晃，每天限 3 次；<b>添加约饭</b>自动同步到计划；<b>去分享</b>餐食直接写进日常动态</p>
+          </figcaption>
+        </figure>
+        <figure class="g-card">
+          <iframe src="frames/iphone-15-pro.html?screen=../screens/06-daily.html" width="390" height="844" loading="lazy" title="日常"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">日常</span><span class="cap-frame">iPhone 15 Pro</span></div>
+            <p class="cap-hints"><b>点赞</b>爱心缩放；<b>评论</b>底部面板；自己的动态可<b>删除</b>；右下角 <b>+</b> 发布新动态</p>
+          </figcaption>
+        </figure>
+        <figure class="g-card">
+          <iframe src="frames/iphone-15-pro.html?screen=../screens/08-plan.html" width="390" height="844" loading="lazy" title="计划"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">计划</span><span class="cap-frame">iPhone 15 Pro</span></div>
+            <p class="cap-hints">月历<b>心/星/点</b>三类标记；点日期筛选当天约会；约会卡<b>错位堆叠</b>；切换月份有滑动动效</p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 心情与关心 -->
+    <section class="g-section" data-od-id="gallery-mood">
+      <div class="g-title">
+        <h2>心情与关心</h2>
+        <span class="g-en">MOOD &amp; CARE</span>
+      </div>
+      <p class="g-sub">1 次点击表达今天的状态，1 次点击让 TA 知道你惦记着 TA。</p>
+      <div class="g-grid">
+        <figure class="g-card">
+          <iframe src="frames/iphone-15-pro.html?screen=../screens/02-mood.html" width="390" height="844" loading="lazy" title="同步心情"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">同步心情</span><span class="cap-frame">iPhone 15 Pro</span></div>
+            <p class="cap-hints">9 种心情单选，选中卡片<b>弹跳高亮</b>；确定后同步给 TA，首页状态即时更新</p>
+          </figcaption>
+        </figure>
+        <figure class="g-card">
+          <iframe src="frames/iphone-15-pro.html?screen=../screens/04-add-meal.html" width="390" height="844" loading="lazy" title="添加约饭"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">添加约饭</span><span class="cap-frame">iPhone 15 Pro</span></div>
+            <p class="cap-hints">日期/时间/地点<b>必填校验</b>，错误提示口语化；创建后约饭卡与<b>计划月历</b>同时出现</p>
+          </figcaption>
+        </figure>
+        <figure class="g-card">
+          <iframe src="frames/iphone-15-pro.html?screen=../screens/05-meal-share.html" width="390" height="844" loading="lazy" title="餐食分享"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">餐食分享</span><span class="cap-frame">iPhone 15 Pro</span></div>
+            <p class="cap-hints">选 1–9 张照片 + 一句话；发送后<b>同步写入日常动态</b>（post_type = meal）</p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 记录与安排 -->
+    <section class="g-section" data-od-id="gallery-plan">
+      <div class="g-title">
+        <h2>记录与安排</h2>
+        <span class="g-en">RECORD &amp; PLAN</span>
+      </div>
+      <p class="g-sub">把今天的点滴写进时间线，把未来的期待标上月历。</p>
+      <div class="g-grid">
+        <figure class="g-card">
+          <iframe src="frames/iphone-15-pro.html?screen=../screens/07-new-post.html" width="390" height="844" loading="lazy" title="发布日常"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">发布日常</span><span class="cap-frame">iPhone 15 Pro</span></div>
+            <p class="cap-hints">拍一张 / 从相册选择；<b>标签 chips</b> 可多选；发布后时间线顶部出现新动态</p>
+          </figcaption>
+        </figure>
+        <figure class="g-card">
+          <iframe src="frames/iphone-15-pro.html?screen=../screens/09-add-date.html" width="390" height="844" loading="lazy" title="添加约会"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">添加约会</span><span class="cap-frame">iPhone 15 Pro</span></div>
+            <p class="cap-hints"><b>约会 / 纪念日 / 其他</b>三类单选，对应月历心形 / 星星 / 圆点标记</p>
+          </figcaption>
+        </figure>
+        <figure class="g-card">
+          <iframe src="frames/android-pixel.html?screen=../screens/10-date-detail.html?id=ev-2" width="390" height="844" loading="lazy" title="约会详情"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">约会详情</span><span class="cap-frame">Android Pixel</span></div>
+            <p class="cap-hints">距离今天倒计时；<b>编辑</b>弹层可改；<b>删除</b>需确认，月历标记同时消失</p>
+          </figcaption>
+        </figure>
+        <figure class="g-card">
+          <iframe src="frames/iphone-15-pro.html?screen=../screens/11-profile.html" width="390" height="844" loading="lazy" title="我的·情侣设置"></iframe>
+          <figcaption>
+            <div class="cap-head"><span class="cap-name">我的 · 情侣设置</span><span class="cap-frame">iPhone 15 Pro</span></div>
+            <p class="cap-hints">编辑昵称；恋爱开始日期与天数；<b>位置共享 / 通知</b>开关；清空演示数据、解除关系（均需确认）</p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 说明 -->
+    <section class="g-notes" data-od-id="gallery-notes">
+      <h2>原型说明</h2>
+      <ul>
+        <li><b>数据联动（PRD §18）：</b>四个 Tab 共享同一份数据——修改心情 → 首页同步；创建约饭 → 计划出现心形标记；餐食分享 → 日常新增动态；创建约会 → 月历与卡片同时更新。所有屏幕可在总览页同时打开观察联动。</li>
+        <li><b>演示数据：</b>林舟（上海市）与苏棠（北京市），恋爱开始 2025.11.10，首页恋爱天数实时计算（2026.09.10 显示 304 天）。</li>
+        <li><b>交互细节（PRD §4.3 / §5.1）：</b>心情卡弹跳、点赞爱心缩放、想你了爱心飞出、提醒铃铛摇晃、日历月份滑动、加载小太阳；所有可点击卡片有按压缩放反馈与焦点环。</li>
+        <li><b>业务规则：</b>提醒 TA 每天最多 3 次；一天只保留一个当前心情；只有创建者可删除自己的内容；未结束的约会才进入「即将到来」。</li>
+      </ul>
+      <p class="n-foot">
+        演示照片以手绘插画占位——情侣的私密照片没有可获取的真实素材，发布流程（选图 / 拍照 / 相册）已完整实现，正式使用时替换为真实照片。
+        · 标题字体：马善政楷体（Google Fonts，离线自动回退系统楷体）
+        · 设备外框：Open Design 共享 frames（iPhone 15 Pro / Android Pixel）
+        · 原型入口：screens/ 下每个屏幕均为独立 HTML 文件，可直接打开单个屏幕调试。
+      </p>
+    </section>
+  </div>
+</body>
+</html>

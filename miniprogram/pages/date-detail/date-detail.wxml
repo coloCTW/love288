@@ -1,0 +1,107 @@
+<view class="page stack">
+  <!-- 未找到 -->
+  <view wx:if="{{notFound}}" class="empty not-found">
+    <view class="e-ill">
+      <view class="avatar av-42" style="background-image:url('{{icons.avLin}}');"></view>
+      <view class="avatar av-42" style="background-image:url('{{icons.avSu}}');"></view>
+    </view>
+    <view class="e-title">这个约会好像不见了</view>
+    <view class="e-sub">好像走神了一下，再回去看看吧～</view>
+    <button class="btn btn-primary btn-block back-btn" hover-class="btn-press" bindtap="goBackPlan">回到计划</button>
+  </view>
+
+  <!-- 详情 -->
+  <block wx:elif="{{ev}}">
+    <view class="detail-hero">
+      <view class="dh-ill ill-{{ev.illTint}}" style="background-image:url('{{ev.illIcon}}');"></view>
+      <view class="dh-title">{{ev.title}} <text class="heart-txt">❤️</text></view>
+      <view class="dh-countdown">{{ev.countdownLine}}</view>
+      <view class="chip pink dh-chip">{{ev.typeLabel}}</view>
+    </view>
+
+    <view class="card detail-card">
+      <view class="detail-row">
+        <view class="dr-ic" style="background-image:url('{{icons.calendar}}');"></view>
+        <view class="dr-main">
+          <view class="dr-label">日期</view>
+          <view class="dr-value">{{ev.dateLine}}</view>
+        </view>
+      </view>
+      <view class="detail-row">
+        <view class="dr-ic" style="background-image:url('{{icons.pin}}');"></view>
+        <view class="dr-main">
+          <view class="dr-label">地点</view>
+          <view class="dr-value">{{ev.locLine}}</view>
+        </view>
+      </view>
+      <view wx:if="{{ev.note}}" class="detail-row">
+        <view class="dr-ic" style="background-image:url('{{icons.journal}}');"></view>
+        <view class="dr-main">
+          <view class="dr-label">备注</view>
+          <view class="dr-value">{{ev.note}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="act-row">
+      <button class="btn btn-soft" hover-class="btn-press" bindtap="openEdit">
+        <view class="ic ic-24" style="background-image:url('{{icons.edit}}');"></view>
+        <text>编辑</text>
+      </button>
+      <button wx:if="{{ev.isMine}}" class="btn btn-danger" hover-class="btn-press" bindtap="onDelete">
+        <view class="ic ic-24" style="background-image:url('{{icons.trash}}');"></view>
+        <text>删除</text>
+      </button>
+    </view>
+    <view class="detail-foot">由 {{ev.creatorName}} 创建 · 只有创建者可以删除</view>
+  </block>
+
+  <!-- 编辑弹层 -->
+  <sheet show="{{sheetShow}}" title="编辑「{{ev.title}}」" bind:close="onSheetClose">
+    <view class="form-stack ed-form">
+      <view class="field">
+        <view class="field-label">约会名称</view>
+        <input class="input" placeholder-class="ph" value="{{edTitle}}" data-key="edTitle" bindinput="onEdInput" />
+      </view>
+      <view class="field-row">
+        <view class="field">
+          <view class="field-label">日期</view>
+          <picker mode="date" value="{{edDate}}" bindchange="onEdDate">
+            <view class="picker">{{edDate}}</view>
+          </picker>
+        </view>
+        <view class="field">
+          <view class="field-label">时间</view>
+          <picker mode="time" value="{{edTime}}" bindchange="onEdTime">
+            <view class="picker">{{edTime}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="field">
+        <view class="field-label">地点</view>
+        <input class="input" placeholder-class="ph" placeholder="地点" value="{{edLoc}}" data-key="edLoc" bindinput="onEdInput" />
+      </view>
+      <view class="field">
+        <view class="field-label">备注</view>
+        <input class="input" placeholder-class="ph" placeholder="备注" value="{{edNote}}" data-key="edNote" bindinput="onEdInput" />
+      </view>
+      <button class="btn btn-primary btn-block ed-save" hover-class="btn-press" bindtap="saveEdit">
+        <view wx:if="{{edBusy}}" class="sun-spin ic ic-24" style="background-image:url('{{icons.sun}}');"></view>
+        <text>{{edBusy ? '正在保存' : '保存修改'}}</text>
+      </button>
+    </view>
+  </sheet>
+
+  <!-- 删除确认 -->
+  <confirm
+    show="{{confirmShow}}"
+    ill="{{confirm.ill}}"
+    title="{{confirm.title}}"
+    sub="{{confirm.sub}}"
+    okText="{{confirm.okText}}"
+    cancelText="{{confirm.cancelText}}"
+    danger="{{confirm.danger}}"
+    bind:confirm="onConfirmOk"
+    bind:cancel="onConfirmCancel"
+  ></confirm>
+</view>

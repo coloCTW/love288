@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>餐食分享 · 两个人的小世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/css/app.css" />
+</head>
+<body>
+  <div class="phone">
+    <header class="wx-nav" data-od-id="meal-share-nav">
+      <button class="nav-back" id="btn-back" aria-label="返回"><svg class="ic"><use href="#ic-back"></use></svg></button>
+      <span class="nav-title">餐食分享</span>
+      <div class="wx-capsule" aria-hidden="true">
+        <span class="caps-item"><svg class="ic-dots"><use href="#ic-dots"></use></svg></span>
+        <span class="caps-divider"></span>
+        <span class="caps-item"><svg class="ic-ring"><use href="#ic-ring"></use></svg></span>
+      </div>
+    </header>
+
+    <main class="page" data-od-id="meal-share-page">
+      <div class="page-head">
+        <p class="hand">你看，我今天吃了这个</p>
+        <p class="head-sub">分享后会自动出现在我们的「日常」里 ❤️</p>
+      </div>
+
+      <section class="card" data-od-id="meal-share-form">
+        <div class="row-between" style="padding:2px 2px 10px">
+          <p style="font-size:14px;font-weight:700">选几张照片</p>
+          <span class="chip green" id="photo-count">已选 0 / 9</span>
+        </div>
+        <div class="photo-strip" id="photo-grid" style="grid-template-columns:repeat(3,1fr)"></div>
+        <p class="photo-hint">原型演示：点击格子模拟选图，发布时会打开相册</p>
+
+        <div class="field" style="margin-top:14px">
+          <label for="f-content">写一句话</label>
+          <textarea class="textarea" id="f-content" maxlength="60">今天也要好好吃饭呀～ ❤️</textarea>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="btn-send" style="min-height:50px;font-size:15.5px;margin-top:14px">
+          <svg class="ic"><use href="#ic-heart-fill"></use></svg>发送
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/app.js"></script>
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var grid = $('photo-grid');
+      var picked = 0;
+      var MAX = 9;
+
+      /* 9 个照片格 */
+      for (var i = 0; i < MAX; i++) {
+        (function (idx) {
+          var slot = document.createElement('button');
+          slot.type = 'button';
+          slot.className = 'photo-slot';
+          slot.setAttribute('aria-label', '选择第 ' + (idx + 1) + ' 张照片');
+          slot.innerHTML = '<span class="slot-inner">' + Icon('ic-photo') + '<span>第 ' + (idx + 1) + ' 张</span></span>';
+          slot.addEventListener('click', function () {
+            if (slot.classList.contains('filled')) {
+              slot.classList.remove('filled');
+              slot.innerHTML = '<span class="slot-inner">' + Icon('ic-photo') + '<span>第 ' + (idx + 1) + ' 张</span></span>';
+              picked--;
+            } else {
+              if (picked >= MAX) return;
+              slot.classList.add('filled');
+              slot.innerHTML = '<span style="position:absolute;inset:0;display:grid;place-items:center;background:var(--paper-green);color:var(--green-ink)">' + Icon('ic-bowl') + '</span>' +
+                '<button type="button" class="rm-photo" aria-label="移除第 ' + (idx + 1) + ' 张">' + Icon('ic-check') + '</button>';
+              slot.querySelector('.rm-photo').addEventListener('click', function (e) { e.stopPropagation(); slot.click(); });
+              picked++;
+            }
+            $('photo-count').textContent = '已选 ' + picked + ' / ' + MAX;
+          });
+          grid.appendChild(slot);
+        })(i);
+      }
+
+      $('btn-send').addEventListener('click', function () {
+        if (picked === 0) { UI.toast('先选一张照片吧，美食要留影呀～', '🍜'); return; }
+        var content = $('f-content').value.trim() || '今天也要好好吃饭呀～ ❤️';
+        UI.withSun(this, 800, '正在发送', function () {
+          Store.commit(function (s) {
+            var id = Store.uid('ms');
+            s.mealShares.unshift({ id: id, userId: s.me.id, content: content, photoCount: picked, at: Date.now() });
+            /* 同步写入日常动态流（PRD §10.4：post_type = meal） */
+            s.posts.unshift({
+              id: 'post-' + id, userId: s.me.id, type: 'meal',
+              content: content, photoCount: picked,
+              location: s.me.city, tags: ['好好吃饭'],
+              at: Date.now(), likes: [], comments: []
+            });
+          });
+          UI.flyHearts(this, 8);
+          UI.toast('已分享给 TA，也写进日常啦 ❤️', '🥢');
+          setTimeout(function () { location.href = '03-eat.html'; }, 1300);
+        });
+      });
+
+      $('btn-back').addEventListener('click', function () { UI.back('03-eat.html'); });
+    })();
+  </script>
+</body>
+</html>

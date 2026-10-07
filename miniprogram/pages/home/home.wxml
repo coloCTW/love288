@@ -1,0 +1,197 @@
+<view class="page stack tab-page-pad" style="padding-top: 120rpx;">
+  <!-- A. 情侣主卡 -->
+  <view class="card card-peach rel couple-hero">
+    <view class="days">
+      <view class="days-caption-top">和{{ta.name}}已经</view>
+      <view class="days-num-row">
+        <text class="num">{{days}}</text>
+      </view>
+      <view class="day-tag">DAY</view>
+      <!-- <view class="days-caption">{{nextDateLine}}</view> -->
+    </view>
+    <view class="duo">
+      <view class="duo-side" bindtap="goProfile" hover-class="btn-press">
+      </view>
+      <view class="duo-side" bindtap="goProfile" hover-class="btn-press">
+      </view>
+    </view>
+    <view class="hero-meta">
+      <view class="m-chip dist">
+        <text>{{dist === '--' ? '--' : dist + 'km'}}</text>
+      </view>
+    </view>
+    <view class="m-chip batt-left">
+      <view class="batt-out">
+        <view class="batt-track"><view class="batt-fill {{battTa.cls}}" style="width:{{battTa.pct == null ? 0 : battTa.pct}}%;"></view></view>
+      </view>
+      <text class="batt-num">{{battTa.pct == null ? '未同步' : battTa.pct + '%'}}</text>
+    </view>
+    <view class="m-chip batt-right">
+      <view class="batt-out">
+        <view class="batt-track"><view class="batt-fill {{battMe.cls}}" style="width:{{battMe.pct == null ? 0 : battMe.pct}}%;"></view></view>
+      </view>
+      <text class="batt-num">{{battMe.pct == null ? '未同步' : battMe.pct + '%'}}</text>
+    </view>
+    <view class="batt-name">
+      <view class="name-left">
+        <text>{{battTa.name}}</text>
+      </view>
+      <view class="name-right">
+        <text>{{battMe.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- B. 双方天气卡 -->
+  <view class="weather-row">
+    <view class="card card-blue card-flat weather-cell w-blue">
+      <view class="w-above">
+        <view class="w-address">
+          <view class="iconfont icon-weizhi" style="font-size: 25rpx;"></view>
+          <view class="w-city">{{weatherMe.city}}</view>
+        </view>
+
+        <view class="w-updated mono">{{battTa.name}}·{{weatherMe.upd}}</view>
+      </view>
+      <view class="w-main">
+        <!-- <view class="ic w-icon" style="background-image:url('{{weatherMe.icon}}');"></view> -->
+        <view class="ic w-icon">
+          <image src="../../images/w-cloudy.png" mode="aspectFit"/>
+        </view>
+        <view>
+          <view class="w-detail">
+            <text class="w-temp">{{weatherMe.temp}}°</text>
+            <view class="w-cond">{{weatherMe.cond}}</view>
+          </view>
+          <view class="w-range">低 {{weatherMe.low}} 高 {{weatherMe.high}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="card card-sun card-flat weather-cell w-sun">
+      <view class="w-above">
+        <view class="w-address">
+          <view class="iconfont icon-weizhi" style="font-size: 25rpx;"></view>
+          <view class="w-city">{{weatherTa.city}}</view>
+        </view>
+        <view class="w-updated mono">{{battMe.name}}·{{weatherTa.upd}}</view>
+      </view>
+      <view class="w-main">
+        <view class="ic w-icon">
+          <image src="../../images/w-sun.png" mode="aspectFit"/>
+        </view>
+        <view>
+          <view class="w-detail">
+            <text class="w-temp">{{weatherTa.temp}}°</text>
+            <view class="w-cond">{{weatherTa.cond}}</view>
+          </view>
+          <view class="w-range">低 {{weatherTa.low}} 高 {{weatherTa.high}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- C. 贴心提醒入口 -->
+  <view class="card remind-row" bindtap="openRemind" hover-class="btn-press">
+    <!-- <view
+      class="bell-badge {{shake ? 'shake' : ''}} {{remindBusy ? 'sun-spin' : ''}}"
+      style="background-image:url('{{remindBusy ? icons.sun : icons.bell}}');"
+    ></view> -->
+    <view class="bell-badge clock {{shake ? 'shake' : ''}}"><image src="../../images/clock.png" mode="aspectFit"/></view>
+    <view class="remind-main">
+      <view class="r-title">贴心提醒</view>
+      <view class="r-sub">为 TA 设置一次温柔提醒</view>
+    </view>
+    <view class="go-arrow ic ic-19" style="background-image:url('{{icons.arrow}}');"></view>
+  </view>
+
+  <!-- D. 同步心情 -->
+  <view class="mood-row">
+    <view class="mood-card mood-me" style="background: {{mm_bgColor}};">
+      <image class="m-pic" src="{{moodMe.face}}" data-src="{{moodMe.face}}" data-bgcolor="mm_bgColor" bindload="onImgLoad" mode=""/>
+      <view class="mcard-right">
+        <view class="m-update">{{moodMe.type}}の{{me.name}}
+          <text>\n{{moodMe.at ? moodMe.at : ''}}</text>
+        </view>
+        <button class="btn btn-ghost btn-block mood-edit" hover-class="btn-press" bindtap="goMood">同步心情</button>
+      </view>
+
+    </view>
+    <view class="mood-card mood-ta" style="background: {{mt_bgColor}};">
+      <image class="m-pic" src="{{moodTa.face}}" data-src="{{moodTa.face}}" data-bgcolor="mt_bgColor" bindload="onImgLoad" mode=""/>
+      <view class="mcard-right">
+        <view class="m-update">{{moodTa.type}}の{{ta.name}}
+          <text>\n{{moodTa.at ? moodTa.at : ''}}</text>
+        </view>
+        <button class="btn btn-soft btn-sm" hover-class="btn-press" bindtap="onHug">抱抱 TA</button>
+        <button class="btn btn-soft btn-sm" hover-class="btn-press" bindtap="onHere">我在哦</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- <view class="card card-pink">
+    <view class="row-between mood-head">
+      <view>
+        <view class="card-title">同步心情 <text class="heart-txt">❤️</text></view>
+        <view class="card-sub">点一下，告诉 TA 你今天的心情</view>
+      </view>
+      <view class="chip pink chip-today">今天</view>
+    </view>
+    <view class="mood-now">
+      <view class="mood-face mood-face-58 {{moodMe.tint}}" style="background-image:url('{{moodMe.face}}');"></view>
+      <view class="mood-info">
+        <view class="m-line"><text class="who">{{me.name}}</text>今天的心情：{{moodMe.type}}</view>
+        <view class="m-at">更新于 {{moodMe.at}}</view>
+      </view>
+    </view>
+    <view class="mood-now mood-now-2">
+      <view class="mood-face mood-face-58 {{moodTa.tint}}" style="background-image:url('{{moodTa.face}}');"></view>
+      <view class="mood-info">
+        <view class="m-line"><text class="who">{{ta.name}}</text>今天的心情：{{moodTa.type}}</view>
+        <view class="m-at">更新于 {{moodTa.at}}</view>
+        <view class="mood-quick">
+          <button class="btn btn-soft btn-sm" hover-class="btn-press" bindtap="onHug">抱抱 TA</button>
+          <button class="btn btn-soft btn-sm" hover-class="btn-press" bindtap="onHere">我在哦</button>
+        </view>
+      </view>
+    </view>
+    <button class="btn btn-ghost btn-block mood-edit" hover-class="btn-press" bindtap="goMood">修改今天的心情</button>
+  </view> -->
+
+  <!-- E. 一键想你 -->
+  <!-- <button class="btn btn-primary btn-block miss-btn" hover-class="btn-press" bindtap="onMissYou">
+    <view class="ic ic-24" style="background-image:url('{{icons.heartBtn}}');"></view>
+    <text>想你了</text>
+  </button>
+  <view class="miss-caption">按下就会告诉 TA，你正在想 TA ❤️</view> -->
+
+  <!-- 贴心提醒弹层 -->
+  <!-- <sheet show="{{sheetShow}}" title="贴心提醒" sub="为 TA 设置一次温柔提醒，轻一点别太频繁～" bind:close="onRemindClose">
+    <view class="setting-row">
+      <view class="s-ic" style="background-image:url('{{icons.cup}}');"></view>
+      <view class="s-main">
+        <view class="s-title">提醒 TA 喝水</view>
+        <view class="s-sub">下午茶时间提醒 TA 喝口水</view>
+      </view>
+      <switch checked="{{swWater}}" bindchange="onSwWater" color="#ee9a83" />
+    </view>
+    <view class="setting-row">
+      <view class="s-ic" style="background-image:url('{{icons.moon}}');"></view>
+      <view class="s-main">
+        <view class="s-title">明早叫醒 TA</view>
+        <view class="s-sub">07:30 的温柔叫醒服务</view>
+      </view>
+      <switch checked="{{swWake}}" bindchange="onSwWake" color="#ee9a83" />
+    </view>
+    <button class="btn btn-primary btn-block sheet-set" hover-class="btn-press" bindtap="setRemind">设置提醒</button>
+  </sheet> -->
+
+  <!-- <hearts id="hearts"></hearts> -->
+
+  <!-- 获取mood主色的标签 -->
+  <canvas
+  canvas-id="colorCanvas"
+  id="colorCanvas"
+  type="2d"
+  style="position: fixed; left: -9999px; top: -9999px; width: 100px; height: 100px;"
+  />
+</view>

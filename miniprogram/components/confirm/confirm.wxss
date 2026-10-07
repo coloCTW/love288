@@ -1,0 +1,63 @@
+.mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(80, 64, 64, 0.45);
+  z-index: 900;
+  display: none;
+}
+
+.mask.show {
+  display: flex;
+}
+
+.center {
+  align-items: center;
+  justify-content: center;
+  padding: 64rpx;
+}
+
+.dialog {
+  width: 100%;
+  background: var(--paper);
+  border-radius: 48rpx;
+  padding: 40rpx 36rpx 32rpx;
+  text-align: center;
+  box-shadow: 0 16rpx 44rpx rgba(128, 128, 115, 0.16);
+  animation: pop-in 0.2s ease-out;
+}
+
+.d-ill {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 999rpx;
+  background-color: var(--pink-soft);
+  background-repeat: no-repeat;
+  background-size: 60% 60%;
+  background-position: center;
+  margin: 0 auto 20rpx;
+}
+
+.d-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.d-sub {
+  font-size: 25rpx;
+  color: var(--muted);
+  margin-top: 10rpx;
+}
+
+.d-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+}
+
+.d-btn {
+  flex: 1;
+}

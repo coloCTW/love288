@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "添加约会",
+  "usingComponents": {
+    "hearts": "/components/hearts/hearts"
+  }
+}

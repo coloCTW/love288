@@ -1,0 +1,307 @@
+/* 好好吃饭 · 页面专属样式（共享类见 app.wxss） */
+
+.page-head {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 0;
+}
+
+.eat-card {
+  border: 4rpx solid #fab07e;
+  background: #fcf5e6;
+  padding-top: 25rpx;
+}
+
+/* 模块一 */
+.eat-bell {
+  background: none;
+}
+
+.remind-row .remind-btn {
+  font-size: 20rpx;
+  padding: 0;
+  width: 200rpx;
+  min-height: 60rpx;
+}
+
+.btn-primary {
+  font-size: 24rpx;
+  background: #f8ebd7;
+  color: #8e664c;
+  border: 2rpx solid #fab07e;
+  box-shadow: none;
+}
+
+.remind-count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 23rpx;
+  color: var(--muted);
+  margin-top: 20rpx;
+}
+
+/* 模块二：最近一次约饭 */
+.meal-kind {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.k-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  font-size: 25rpx;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.k-img {
+  width: 70rpx;
+  height: 70rpx;
+}
+
+.meal-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 28rpx;
+  margin-top: 20rpx;
+}
+
+.meal-block {
+  background: #feefe6;
+  border: 4rpx solid #f3c4bf;
+  border-radius: 28rpx;
+  padding: 24rpx 15rpx;
+  flex: 1;
+}
+
+.meal-date {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.meal-date image {
+  width: 130rpx;
+  max-height: 266rpx;
+  border-radius: 28rpx;
+}
+
+.meal-detail {
+  flex: 1;
+}
+
+.meal-chip {
+  font-weight: 700;
+  padding: 6rpx 24rpx;
+}
+
+.meal-title {
+  /* font-family: var(--font-display); */
+  font-size: 42rpx;
+  color: var(--fg);
+}
+
+.meal-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-top: 14rpx;
+}
+
+.mm-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  font-size: 25rpx;
+  color: var(--muted);
+  font-size: 23rpx;
+}
+
+.ic-19 {
+  width: 30rpx;
+  height: 30rpx;
+}
+
+.meal-note {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  font-weight: 500;
+  color: var(--accent-ink);
+  margin-top: 14rpx;
+}
+
+.mn-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  background-repeat: no-repeat;
+}
+
+.meal-note text {
+  flex: 1;
+  margin-left: 10rpx;
+}
+
+.meal-empty {
+  padding: 20rpx;
+}
+
+.e-ill {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.meal-main .meal-add {
+  width: 150rpx;
+  background: #f9f2df;
+  border: 4rpx dashed #fdc061;
+  padding: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.plus {
+  width: 70rpx;
+  height: 70rpx;
+  border: 4rpx solid #fdc161;
+  border-radius: 50%;
+  background-size: 50rpx 50rpx;
+}
+
+/* 模块三：分享今日餐食 */
+.es-header {
+  display: flex;
+  align-items: center;
+}
+
+.es-header image{
+  width: 70rpx;
+  height: 70rpx;
+  margin-right: 24rpx;
+}
+
+.share-box {
+  margin-top: 24rpx;
+}
+
+.share-item + .share-item {
+  margin-top: 24rpx;
+}
+
+.share-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+}
+
+.p-photo {
+  width: 176rpx;
+  height: 176rpx;
+  border-radius: 24rpx;
+  background-color: var(--green-soft);
+  background-repeat: no-repeat;
+  background-size: 56% 56%;
+  background-position: center;
+}
+
+.share-content {
+  font-size: 27rpx;
+  color: var(--fg);
+  margin-top: 20rpx;
+}
+
+.share-meta {
+  font-size: 22rpx;
+  color: var(--muted);
+  margin-top: 8rpx;
+}
+
+.share-default {
+  font-size: 26rpx;
+  color: var(--fg);
+  margin-top: 20rpx;
+}
+
+.eat-card .share-go {
+  font-size: 22rpx;
+  padding: 0;
+  width: 180rpx;
+  min-height: 60rpx;
+  margin: 0;
+  margin-left: auto;
+  border: 2rpx solid #fab07e;
+  background: #f8ebd7;
+  color: #8e664c;
+}
+
+/* 历史餐食 */
+.history-sec {
+  padding-top: 4rpx;
+}
+
+.history-head {
+  padding: 4rpx 8rpx;
+}
+
+.history-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.h-strip {
+  margin-top: 20rpx;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.h-item {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8rpx;
+  width: 216rpx;
+  margin-right: 20rpx;
+  background: var(--paper);
+  border-radius: 32rpx;
+  padding: 20rpx;
+  box-shadow: 0 6rpx 20rpx rgba(128, 128, 115, 0.10);
+  vertical-align: top;
+}
+
+.h-photo {
+  width: 176rpx;
+  height: 176rpx;
+  border-radius: 24rpx;
+  background-color: var(--green-soft);
+  background-repeat: no-repeat;
+  background-size: 56% 56%;
+  background-position: center;
+}
+
+.h-cap {
+  font-size: 24rpx;
+  color: var(--fg);
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.h-at {
+  font-size: 21rpx;
+  color: var(--muted);
+}
+
+.history-empty {
+  font-size: 25rpx;
+  color: var(--muted);
+  margin-top: 20rpx;
+}

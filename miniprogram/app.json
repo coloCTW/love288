@@ -1,0 +1,59 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/eat/eat",
+    "pages/daily/daily",
+    "pages/plan/plan",
+    "pages/mood/mood",
+    "pages/add-meal/add-meal",
+    "pages/meal-share/meal-share",
+    "pages/new-post/new-post",
+    "pages/add-date/add-date",
+    "pages/date-detail/date-detail",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#f0f0e0",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "两个人的小世界",
+    "backgroundColor": "#f0f0e0",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#75675c",
+    "selectedColor": "#ee9a83",
+    "backgroundColor": "#fdf8ef",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "assets/tab/home.png",
+        "selectedIconPath": "assets/tab/active.png"
+      },
+      {
+        "pagePath": "pages/eat/eat",
+        "text": "好好吃饭",
+        "iconPath": "assets/tab/eat.png",
+        "selectedIconPath": "assets/tab/active.png"
+      },
+      {
+        "pagePath": "pages/daily/daily",
+        "text": "日常",
+        "iconPath": "assets/tab/daily.png",
+        "selectedIconPath": "assets/tab/active.png"
+      },
+      {
+        "pagePath": "pages/plan/plan",
+        "text": "计划",
+        "iconPath": "assets/tab/plan.png",
+        "selectedIconPath": "assets/tab/active.png"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

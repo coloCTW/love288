@@ -1,0 +1,102 @@
+/* 同步心情 · 页面专属样式 */
+.page image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+}
+.mood-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28rpx;
+  margin-top: 180rpx;
+}
+
+.mood-cell {
+  position: relative;
+  width: calc((100% - 56rpx) / 3);
+  aspect-ratio: 1/1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: var(--paper);
+  border-radius: 36rpx;
+  box-shadow: 0 6rpx 20rpx rgba(128, 128, 115, 0.10);
+  background-color: var(--accent);
+  box-sizing: border-box;
+}
+
+.mood-cell image {
+  width: 100%;
+  height: 100%;
+  border-radius: 36rpx;
+}
+
+.mood-cell.selected {
+  border-color: var(--accent-ink);
+  background: var(--accent-soft);
+  /* border: 6rpx solid var(--accent); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 6rpx 20rpx rgba(128, 128, 115, 0.60);
+  box-sizing: border-box;
+  outline: 6rpx solid var(--accent);
+  outline-offset: -1rpx;
+}
+
+.mood-cell.bounce {
+  animation: mood-bounce 0.25s ease-out;
+}
+
+.check-dot {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 999rpx;
+  background-color: var(--accent);
+  background-repeat: no-repeat;
+  background-size: 70% 70%;
+  background-position: center;
+  display: none;
+}
+
+.mood-cell.selected .check-dot {
+  display: block;
+}
+
+.mood-face-52 {
+  width: 104rpx;
+  height: 104rpx;
+}
+
+.m-name {
+  font-size: 24rpx;
+  color: var(--muted);
+}
+
+.mood-cell.selected .m-name {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+.mood-tip {
+  text-align: center;
+  font-size: 23rpx;
+  color: var(--muted);
+  margin-top: 8rpx;
+}
+
+.mood-confirm {
+  min-height: 104rpx;
+  font-size: 32rpx;
+  border-radius: 32rpx;
+}
+
+.btn-primary {
+  box-shadow: none;
+}

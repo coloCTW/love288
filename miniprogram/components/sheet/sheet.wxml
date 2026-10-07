@@ -1,0 +1,8 @@
+<view class="mask {{show ? 'show' : ''}}" bindtap="onMask" catchtouchmove="noop">
+  <view class="sheet" catchtap="noop">
+    <view class="sheet-handle"></view>
+    <view class="sheet-title" wx:if="{{title}}">{{title}}</view>
+    <view class="sheet-sub" wx:if="{{sub}}">{{sub}}</view>
+    <slot></slot>
+  </view>
+</view>

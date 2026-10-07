@@ -1,0 +1,151 @@
+<view class="page stack">
+  <!-- 我的资料 -->
+  <view class="card card-peach me-card">
+    <view class="row-between">
+      <view class="row me-row">
+        <view class="avatar av-48" style="background-image:url('{{me.avatar}}');"></view>
+        <view class="me-info">
+          <view class="me-name">{{me.name}}</view>
+          <view class="me-city">{{me.cityLine}}</view>
+        </view>
+      </view>
+      <button class="btn btn-ghost btn-sm btn-nick" hover-class="btn-press" bindtap="openNick">编辑昵称</button>
+    </view>
+  </view>
+
+  <!-- 情侣资料（已绑定） -->
+  <view class="card card-pink" wx:if="{{bound}}">
+    <view class="card-title">我们的资料 <text class="heart-txt">❤️</text></view>
+    <view class="row cp-row">
+      <view class="cp-side">
+        <view class="avatar av-56" style="background-image:url('{{cpMe.avatar}}');"></view>
+        <view class="cp-name">{{cpMe.name}}</view>
+      </view>
+      <view class="cp-heart" style="background-image:url('{{icons.heartSmall}}');"></view>
+      <view class="cp-side">
+        <view class="avatar av-56" style="background-image:url('{{cpTa.avatar}}');"></view>
+        <view class="cp-name">{{cpTa.name}}</view>
+      </view>
+    </view>
+    <view class="card-foot cp-foot">
+      恋爱开始 <text class="mono">{{cpStart}}</text>　·　已经在一起 <text class="mono">{{cpDays}}</text> 天
+    </view>
+  </view>
+
+  <!-- 绑定情侣（未绑定） -->
+  <view class="card card-pink bind-card" wx:else>
+    <view class="card-title">绑定情侣 <text class="heart-txt">❤️</text></view>
+    <view class="card-sub">两个人一起，才是我们的小世界</view>
+    <button class="btn btn-soft btn-block data-btn" hover-class="btn-press" bindtap="onGenCode">
+      <view wx:if="{{genBusy}}" class="sun-spin ic ic-24" style="background-image:url('{{icons.sun}}');"></view>
+      <text>{{genBusy ? '正在生成' : '生成邀请码'}}</text>
+    </button>
+    <button class="btn btn-primary btn-block data-btn" hover-class="btn-press" bindtap="openBind">
+      <text>输入邀请码绑定</text>
+    </button>
+    <view class="card-foot" wx:if="{{demoMode}}">现在是演示模式：看到的是示例数据，绑定后内容只属于你们俩哦～</view>
+  </view>
+
+  <!-- 位置共享（已绑定） -->
+  <view class="card" wx:if="{{bound}}">
+    <view class="card-title">位置共享</view>
+    <view class="setting-row">
+      <view class="s-ic" style="background-image:url('{{icons.pin}}');"></view>
+      <view class="s-main">
+        <view class="s-title">允许 TA 查看我的城市</view>
+        <view class="s-sub">只显示城市，不显示精确位置</view>
+      </view>
+      <switch checked="{{sw.shareCity}}" data-key="shareCity" data-msg="位置共享已更新" bindchange="onSwitch" color="#ee9a83" />
+    </view>
+    <view class="setting-row">
+      <view class="s-ic pink" style="background-image:url('{{icons.heart}}');"></view>
+      <view class="s-main">
+        <view class="s-title">允许 TA 查看两人距离</view>
+        <view class="s-sub">首页显示我们相距多远</view>
+      </view>
+      <switch checked="{{sw.shareDistance}}" data-key="shareDistance" data-msg="距离显示已更新" bindchange="onSwitch" color="#ee9a83" />
+    </view>
+  </view>
+
+  <!-- 通知设置（已绑定） -->
+  <view class="card" wx:if="{{bound}}">
+    <view class="card-title">通知设置</view>
+    <view class="setting-row">
+      <view class="s-ic" style="background-image:url('{{icons.bell}}');"></view>
+      <view class="s-main">
+        <view class="s-title">提醒吃饭</view>
+        <view class="s-sub">TA 提醒我吃饭时通知我</view>
+      </view>
+      <switch checked="{{sw.mealNotify}}" data-key="mealNotify" data-msg="通知设置已更新" bindchange="onSwitch" color="#ee9a83" />
+    </view>
+    <view class="setting-row">
+      <view class="s-ic" style="background-image:url('{{icons.calendar}}');"></view>
+      <view class="s-main">
+        <view class="s-title">约会提醒</view>
+        <view class="s-sub">约会前一天提醒我们</view>
+      </view>
+      <switch checked="{{sw.dateNotify}}" data-key="dateNotify" data-msg="约会提醒已更新" bindchange="onSwitch" color="#ee9a83" />
+    </view>
+    <view class="setting-row">
+      <view class="s-ic" style="background-image:url('{{icons.moon}}');"></view>
+      <view class="s-main">
+        <view class="s-title">叫醒服务</view>
+        <view class="s-sub">07:30 的温柔叫醒</view>
+      </view>
+      <switch checked="{{sw.wake}}" data-key="wake" data-msg="叫醒服务已更新" bindchange="onSwitch" color="#ee9a83" />
+    </view>
+  </view>
+
+  <!-- 数据与隐私 -->
+  <view class="card">
+    <view class="card-title data-title">数据与隐私</view>
+    <button wx:if="{{bound}}" class="btn btn-danger btn-block data-btn" hover-class="btn-press" bindtap="onUnpair">
+      <view class="ic ic-24" style="background-image:url('{{icons.trash}}');"></view>
+      <text>解除情侣关系</text>
+    </button>
+    <view class="card-foot">所有内容只对我们两个人可见，数据保存在微信云开发云端。</view>
+  </view>
+
+  <!-- 编辑昵称 -->
+  <sheet show="{{sheetShow}}" title="编辑昵称" bind:close="onSheetClose">
+    <view class="field nick-field">
+      <view class="field-label">我的昵称</view>
+      <input class="input" placeholder-class="ph" maxlength="8" value="{{nick}}" bindinput="onNickInput" />
+    </view>
+    <button class="btn btn-primary btn-block nick-save" hover-class="btn-press" bindtap="saveNick">
+      <view wx:if="{{nickBusy}}" class="sun-spin ic ic-24" style="background-image:url('{{icons.sun}}');"></view>
+      <text>{{nickBusy ? '正在保存' : '保存'}}</text>
+    </button>
+  </sheet>
+
+  <!-- 输入邀请码绑定 -->
+  <sheet show="{{bindShow}}" title="绑定邀请码" sub="输入 TA 的 6 位邀请码，写下我们的恋爱开始日" bind:close="onBindClose">
+    <view class="field nick-field">
+      <view class="field-label">邀请码</view>
+      <input class="input" type="number" placeholder-class="ph" maxlength="6" placeholder="TA 发给你的 6 位数字" value="{{bindCode}}" bindinput="onBindInput" />
+    </view>
+    <view class="field nick-field">
+      <view class="field-label">恋爱开始日</view>
+      <picker mode="date" value="{{bindStart}}" end="{{bindMax}}" bindchange="onBindStart">
+        <view class="picker">{{bindStart}}</view>
+      </picker>
+    </view>
+    <button class="btn btn-primary btn-block nick-save" hover-class="btn-press" bindtap="onBindOk">
+      <view wx:if="{{bindBusy}}" class="sun-spin ic ic-24" style="background-image:url('{{icons.sun}}');"></view>
+      <text>{{bindBusy ? '正在绑定' : '绑定'}}</text>
+    </button>
+  </sheet>
+
+  <!-- 确认弹窗 -->
+  <confirm
+    show="{{confirmShow}}"
+    ill="{{confirm.ill}}"
+    title="{{confirm.title}}"
+    sub="{{confirm.sub}}"
+    okText="{{confirm.okText}}"
+    cancelText="{{confirm.cancelText}}"
+    danger="{{confirm.danger}}"
+    bind:confirm="onConfirmOk"
+    bind:cancel="onConfirmCancel"
+  ></confirm>
+</view>

@@ -1,0 +1,133 @@
+<view class="page stack tab-page-pad">
+  <view class="page-head">
+    <image src="../../images/daily-header.jpg" style="width: 100%;" mode="widthFix"/>
+  </view>
+
+  <view style="margin-top: 395rpx;"></view>
+  <!-- 动态流 -->
+  <block wx:if="{{!empty}}">
+    <view
+      wx:for="{{posts}}"
+      wx:key="id"
+      class="card post-card {{item.enter ? 'fade-up' : ''}}"
+      style="animation-delay:{{item.delay}};"
+    >
+      <view class="post-head">
+        <view class="avatar av-40" style="background-image:url('{{item.avatar}}');"></view>
+        <view class="p-who">
+          <view class="p-name">{{item.name}}</view>
+          <view class="p-meta mono">{{item.meta}}</view>
+        </view>
+        <button
+          wx:if="{{item.isMine}}"
+          class="post-more"
+          style="background-image:url('{{icons.more}}');"
+          data-post="{{item.id}}"
+          bindtap="onMore"
+          hover-class="btn-press"
+          aria-label="更多操作"
+        ></button>
+      </view>
+      <view class="post-body">
+        <view wx:if="{{item.typeTag}}" class="chip {{item.typeTag.cls}} post-type-tag">{{item.typeTag.label}}</view>
+        <block wx:if="{{item.hasText}}">
+          <text class="body-line" wx:for="{{item.contentLines}}" wx:for-item="line" wx:key="k">{{line.t}}</text>
+        </block>
+      </view>
+      <view wx:if="{{item.hasPhotos}}" class="post-photos {{item.photosOne ? 'one' : ''}}">
+        <view
+          wx:for="{{item.photoTiles}}"
+          wx:for-item="tile"
+          wx:key="k"
+          class="p-photo {{item.typeTag && item.typeTag.cls === 'green' ? 'meal' : ''}}"
+          style="background-image:url('{{tile.uri}}');"
+        ></view>
+      </view>
+      <view wx:if="{{item.tags.length}}" class="post-tags">
+        <view wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this" class="chip pink">#{{tag}}</view>
+      </view>
+      <view class="post-actions">
+        <button
+          class="post-act {{item.liked ? 'liked' : ''}}"
+          data-idx="{{index}}"
+          data-post="{{item.id}}"
+          bindtap="onLike"
+          hover-class="btn-press"
+        >
+          <view class="act-ic" style="background-image:url('{{item.likeIcon}}');"></view>
+          <text>{{item.likeCount}}</text>
+        </button>
+        <button
+          class="post-act"
+          data-idx="{{index}}"
+          data-post="{{item.id}}"
+          bindtap="onComment"
+          hover-class="btn-press"
+        >
+          <view class="act-ic" style="background-image:url('{{icons.chat}}');"></view>
+          <text>{{item.commentCount}}</text>
+        </button>
+      </view>
+      <view wx:if="{{item.comments.length}}" class="post-comments">
+        <view wx:for="{{item.comments}}" wx:for-item="c" wx:key="k" class="cmt">
+          <view class="avatar av-26" style="background-image:url('{{c.avatar}}');"></view>
+          <view class="c-body"><text class="c-name">{{c.name}}</text>：{{c.content}}</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 空态 -->
+  <view wx:else class="empty">
+    <view class="e-ill">
+      <view class="avatar av-42" style="background-image:url('{{icons.meAvatar}}');"></view>
+      <view class="avatar av-42" style="background-image:url('{{icons.taAvatar}}');"></view>
+    </view>
+    <view class="e-title">还没有记录哦</view>
+    <view class="e-sub">一起写下今天的第一件小事吧 ❤️</view>
+  </view>
+
+  <!-- 发布 FAB（避开原生 tabBar） -->
+  <view class="fab" bindtap="goNewPost" hover-class="btn-press" aria-label="发布动态">
+    <view class="ic ic-30" style="background-image:url('{{icons.plus}}');"></view>
+  </view>
+
+  <!-- 评论弹层 -->
+  <sheet show="{{cmtShow}}" title="评论" sub="只有我们两个人看得到哦" bind:close="onCmtClose">
+    <view class="cmt-sheet-list">
+      <view wx:for="{{cmtList}}" wx:key="k" class="cmt">
+        <view class="avatar av-26" style="background-image:url('{{item.avatar}}');"></view>
+        <view class="c-body"><text class="c-name">{{item.name}}</text>：{{item.content}}</view>
+      </view>
+      <view wx:if="{{!cmtList.length}}" class="cmt-empty">还没有评论，说点什么吧～</view>
+    </view>
+    <view class="cmt-input-row">
+      <view class="avatar av-34" style="background-image:url('{{icons.meAvatar}}');"></view>
+      <input
+        class="input cmt-input"
+        focus="{{cmtFocus}}"
+        maxlength="40"
+        placeholder="写点什么…"
+        placeholder-class="ph"
+        value="{{cmtValue}}"
+        bindinput="onCmtInput"
+      />
+      <button class="btn btn-primary cmt-send" hover-class="btn-press" bindtap="sendCmt">发送</button>
+    </view>
+  </sheet>
+
+  <!-- 删除确认 -->
+  <confirm
+    show="{{confirmShow}}"
+    ill="{{confirm.ill}}"
+    title="{{confirm.title}}"
+    sub="{{confirm.sub}}"
+    okText="{{confirm.okText}}"
+    cancelText="{{confirm.cancelText}}"
+    danger="{{confirm.danger}}"
+    bind:confirm="onConfirmOk"
+    bind:cancel="onConfirmCancel"
+  ></confirm>
+
+  <!-- <hearts id="hearts"></hearts> -->
+</view>

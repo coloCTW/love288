@@ -1,0 +1,87 @@
+/* 我的 · 情侣设置 · 页面专属样式 */
+.me-card {
+  border: 4rpx solid #fab07e;
+  background: #fcf5e6;
+}
+
+.me-row {
+  gap: 24rpx;
+}
+
+.me-info {
+  min-width: 0;
+}
+
+.me-name {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.me-city {
+  font-size: 25rpx;
+  color: var(--muted);
+  margin-top: 2rpx;
+}
+
+.me-card .btn-nick {
+  width: 200rpx;
+  font-size: 24rpx;
+  margin: 0;
+}
+
+/* 情侣资料 */
+.cp-row {
+  justify-content: center;
+  gap: 28rpx;
+  margin-top: 28rpx;
+}
+
+.cp-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.cp-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.cp-heart {
+  width: 40rpx;
+  height: 40rpx;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.cp-foot {
+  text-align: center;
+}
+
+.bind-card {
+  background: #feefe6;
+  border: 4rpx solid #f3c4bf;
+}
+
+/* 数据区 */
+.data-title {
+  margin-bottom: 16rpx;
+}
+
+.data-btn {
+  justify-content: center;
+  border-radius: 24rpx;
+  margin-top: 16rpx;
+}
+
+/* 昵称弹层 */
+.nick-field {
+  margin-top: 24rpx;
+}
+
+.nick-save {
+  margin-top: 24rpx;
+}

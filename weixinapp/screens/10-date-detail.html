@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>约会详情 · 两个人的小世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/css/app.css" />
+</head>
+<body>
+  <div class="phone">
+    <header class="wx-nav" data-od-id="detail-nav">
+      <button class="nav-back" id="btn-back" aria-label="返回"><svg class="ic"><use href="#ic-back"></use></svg></button>
+      <span class="nav-title">约会详情</span>
+      <div class="wx-capsule" aria-hidden="true">
+        <span class="caps-item"><svg class="ic-dots"><use href="#ic-dots"></use></svg></span>
+        <span class="caps-divider"></span>
+        <span class="caps-item"><svg class="ic-ring"><use href="#ic-ring"></use></svg></span>
+      </div>
+    </header>
+
+    <main class="page stack" data-od-id="detail-page">
+      <div id="detail-body"></div>
+    </main>
+  </div>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/app.js"></script>
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var id = new URLSearchParams(location.search).get('id');
+      var body = $('detail-body');
+
+      function findEvent() {
+        var st = Store.get();
+        for (var i = 0; i < st.events.length; i++) {
+          if (st.events[i].id === id) return st.events[i];
+        }
+        return null;
+      }
+      var ev = findEvent();
+
+      if (!ev) {
+        body.innerHTML = '<div class="empty" style="margin-top:40px">' +
+          '<span class="e-ill" style="display:flex;align-items:center;gap:6px;justify-content:center;width:auto">' + Avatar('lin', 42) + Avatar('su', 42) + '</span>' +
+          '<p class="e-title">这个约会好像不见了</p>' +
+          '<p class="e-sub">好像走神了一下，再回去看看吧～</p>' +
+          '<a class="btn btn-primary btn-block" href="08-plan.html" style="margin-top:14px">回到计划</a>' +
+        '</div>';
+        $('btn-back').addEventListener('click', function () { UI.back('08-plan.html'); });
+        return;
+      }
+
+      var ICONS = { date: 'ic-heart', meal: 'ic-bowl', anniversary: 'ic-star-fill', todo: 'ic-flower' };
+      var TINTS = { date: 'var(--paper-pink)', meal: 'var(--paper-green)', anniversary: 'var(--paper-sun)', todo: 'var(--paper-blue)' };
+      var ICON_INK = { date: 'var(--pink-ink)', meal: 'var(--green-ink)', anniversary: 'var(--sun-ink)', todo: 'var(--blue-ink)' };
+      var TITLES = { date: '约会', meal: '约饭', anniversary: '纪念日', todo: '待办' };
+
+      function render() {
+        var e = findEvent();
+        if (!e) return;
+        var past = e.date < Store.today();
+        body.innerHTML =
+          '<div class="detail-hero">' +
+            '<span class="dh-ill" style="background:' + TINTS[e.type] + ';color:' + ICON_INK[e.type] + '">' + Icon(ICONS[e.type] || 'ic-heart') + '</span>' +
+            '<p class="dh-title">' + esc(e.title) + ' <span class="heart-txt">❤️</span></p>' +
+            '<p class="dh-countdown">' + (past ? '这个日子已经过去啦，去创造新的吧' : '距离今天：' + Store.countdown(e.date)) + '</p>' +
+            '<span class="chip pink" style="margin-top:8px">' + TITLES[e.type] + '</span>' +
+          '</div>' +
+          '<section class="card" data-od-id="detail-card">' +
+            '<div class="detail-row">' +
+              '<span class="dr-ic">' + Icon('ic-calendar') + '</span>' +
+              '<div><p class="dr-label">日期</p><p class="dr-value">' + Store.fmtDate(e.date) + (e.time ? '　' + e.time : '') + '</p></div>' +
+            '</div>' +
+            '<div class="detail-row">' +
+              '<span class="dr-ic">' + Icon('ic-pin') + '</span>' +
+              '<div><p class="dr-label">地点</p><p class="dr-value">' + esc((e.city ? e.city + ' · ' : '') + (e.location || '待定')) + '</p></div>' +
+            '</div>' +
+            (e.note ? '<div class="detail-row"><span class="dr-ic">' + Icon('ic-journal') + '</span>' +
+              '<div><p class="dr-label">备注</p><p class="dr-value">' + esc(e.note) + '</p></div></div>' : '') +
+          '</section>' +
+          '<div style="display:flex;gap:10px">' +
+            '<button class="btn btn-soft" id="btn-edit" style="flex:1">' + Icon('ic-edit') + '编辑</button>' +
+            '<button class="btn btn-danger" id="btn-del" style="flex:1">' + Icon('ic-trash') + '删除</button>' +
+          '</div>' +
+          '<p style="text-align:center;font-size:11.5px;color:var(--muted)">由 ' + esc(e.creatorId === Store.get().ta.id ? Store.get().ta.nickname : Store.get().me.nickname) + ' 创建 · 只有创建者可以删除</p>';
+
+        $('btn-edit').addEventListener('click', openEdit);
+        $('btn-del').addEventListener('click', function () {
+          UI.confirm({
+            ill: Icon('ic-trash'),
+            title: '删除「' + e.title + '」？',
+            sub: '月历上的标记也会一起消失哦',
+            ok: '删除',
+            danger: true
+          }).then(function (ok) {
+            if (!ok) return;
+            Store.commit(function (s) {
+              s.events = s.events.filter(function (x) { return x.id !== e.id; });
+            });
+            UI.toast('已经删除啦', '🍃');
+            setTimeout(function () { location.href = '08-plan.html'; }, 900);
+          });
+        });
+      }
+
+      function openEdit() {
+        var e = findEvent();
+        if (!e) return;
+        var sheet = UI.openSheet(
+          '<div class="sheet-handle"></div>' +
+          '<p class="sheet-title">编辑「' + esc(e.title) + '」</p>' +
+          '<div class="form-stack" style="margin-top:14px">' +
+            '<div class="field"><label>约会名称</label><input class="input" id="ed-title" type="text" value="' + esc(e.title) + '" /></div>' +
+            '<div class="field-row">' +
+              '<div class="field"><label>日期</label><input class="input" id="ed-date" type="date" value="' + e.date + '" /></div>' +
+              '<div class="field"><label>时间</label><input class="input" id="ed-time" type="time" value="' + (e.time || '19:00') + '" /></div>' +
+            '</div>' +
+            '<div class="field"><label>地点</label><input class="input" id="ed-loc" type="text" value="' + esc(e.location || '') + '" placeholder="地点" /></div>' +
+            '<div class="field"><label>备注</label><input class="input" id="ed-note" type="text" value="' + esc(e.note || '') + '" placeholder="备注" /></div>' +
+            '<button class="btn btn-primary btn-block" id="ed-save" style="margin-top:6px">保存修改</button>' +
+          '</div>'
+        );
+        sheet.el.querySelector('#ed-save').addEventListener('click', function (btn) {
+          var title = sheet.el.querySelector('#ed-title').value.trim();
+          var date = sheet.el.querySelector('#ed-date').value;
+          if (!title || !date) { UI.toast('名称和日期不能空哦～', '🌷'); return; }
+          UI.withSun(btn, 700, '正在保存', function () {
+            Store.commit(function (s) {
+              var target = null;
+              for (var i = 0; i < s.events.length; i++) if (s.events[i].id === e.id) target = s.events[i];
+              if (target) {
+                target.title = title;
+                target.date = date;
+                target.time = sheet.el.querySelector('#ed-time').value;
+                target.location = sheet.el.querySelector('#ed-loc').value.trim();
+                target.note = sheet.el.querySelector('#ed-note').value.trim();
+              }
+            });
+            sheet.close();
+            UI.toast('修改好啦 ❤️', '✏️');
+            render();
+          });
+        });
+      }
+
+      render();
+      $('btn-back').addEventListener('click', function () { UI.back('08-plan.html'); });
+    })();
+  </script>
+</body>
+</html>

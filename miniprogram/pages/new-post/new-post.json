@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "发布日常",
+  "usingComponents": {
+    "hearts": "/components/hearts/hearts"
+  }
+}

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>发布日常 · 两个人的小世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/css/app.css" />
+</head>
+<body>
+  <div class="phone">
+    <header class="wx-nav" data-od-id="new-post-nav">
+      <button class="nav-back" id="btn-back" aria-label="返回"><svg class="ic"><use href="#ic-back"></use></svg></button>
+      <span class="nav-title">发布日常</span>
+      <div class="wx-capsule" aria-hidden="true">
+        <span class="caps-item"><svg class="ic-dots"><use href="#ic-dots"></use></svg></span>
+        <span class="caps-divider"></span>
+        <span class="caps-item"><svg class="ic-ring"><use href="#ic-ring"></use></svg></span>
+      </div>
+    </header>
+
+    <main class="page" data-od-id="new-post-page">
+      <div class="page-head">
+        <p class="hand">记录一下今天吧 <span class="heart-txt">❤️</span></p>
+        <p class="head-sub">只属于我们两个人的时间线</p>
+      </div>
+
+      <section class="card" data-od-id="new-post-form">
+        <div class="field">
+          <label for="post-content">写点什么……</label>
+          <textarea class="textarea" id="post-content" maxlength="200" placeholder="今天有什么想记下来的小事吗？"></textarea>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label>照片</label>
+          <div class="photo-strip" id="photo-grid" style="grid-template-columns:repeat(3,1fr)"></div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-camera" style="flex:1"><svg class="ic" style="width:16px;height:16px"><use href="#ic-camera"></use></svg>拍一张</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-album" style="flex:1"><svg class="ic" style="width:16px;height:16px"><use href="#ic-photo"></use></svg>从相册选择</button>
+          </div>
+          <p class="photo-hint">原型演示：从相册选择会填充照片格</p>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label>添加标签</label>
+          <div class="post-tags" id="tag-row" style="margin-top:2px"></div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="btn-publish" style="min-height:50px;font-size:15.5px;margin-top:16px">
+          <svg class="ic"><use href="#ic-heart-fill"></use></svg>发布
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/app.js"></script>
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var TAGS = ['约会日', '想你', '好好吃饭', '小确幸'];
+      var pickedTags = [];
+      var grid = $('photo-grid');
+      var photoCount = 0;
+      var MAX = 9;
+
+      for (var i = 0; i < MAX; i++) {
+        (function (idx) {
+          var slot = document.createElement('button');
+          slot.type = 'button';
+          slot.className = 'photo-slot';
+          slot.setAttribute('aria-label', '添加第 ' + (idx + 1) + ' 张照片');
+          slot.innerHTML = '<span class="slot-inner">' + Icon('ic-photo') + '<span>照片</span></span>';
+          slot.addEventListener('click', function () {
+            if (slot.classList.contains('filled')) {
+              slot.classList.remove('filled');
+              slot.innerHTML = '<span class="slot-inner">' + Icon('ic-photo') + '<span>照片</span></span>';
+              photoCount--;
+            } else {
+              slot.classList.add('filled');
+              slot.innerHTML = '<span style="position:absolute;inset:0;display:grid;place-items:center;background:var(--paper-sun);color:var(--sun-ink)">' + Icon('ic-flower') + '</span>' +
+                '<button type="button" class="rm-photo" aria-label="移除照片">' + Icon('ic-check') + '</button>';
+              slot.querySelector('.rm-photo').addEventListener('click', function (e) { e.stopPropagation(); slot.click(); });
+              photoCount++;
+            }
+          });
+          grid.appendChild(slot);
+        })(i);
+      }
+
+      /* 拍一张 / 从相册选择：都落到同一个照片格流 */
+      function fillNext() {
+        if (photoCount >= MAX) { UI.toast('最多 9 张照片哦～', '📷'); return; }
+        var slots = grid.querySelectorAll('.photo-slot');
+        for (var i = 0; i < slots.length; i++) {
+          if (!slots[i].classList.contains('filled')) { slots[i].click(); return; }
+        }
+      }
+      $('btn-camera').addEventListener('click', function () { UI.toast('原型演示：发布时会唤起相机', '📷'); fillNext(); });
+      $('btn-album').addEventListener('click', function () { UI.toast('原型演示：发布时会打开相册', '🖼️'); fillNext(); });
+
+      /* 标签 chips */
+      var tagRow = $('tag-row');
+      TAGS.forEach(function (t) {
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'chip pink';
+        chip.textContent = '#' + t;
+        chip.style.cursor = 'pointer';
+        chip.addEventListener('click', function () {
+          var i = pickedTags.indexOf(t);
+          if (i >= 0) { pickedTags.splice(i, 1); chip.classList.remove('on'); }
+          else { pickedTags.push(t); chip.classList.add('on'); }
+        });
+        tagRow.appendChild(chip);
+      });
+
+      $('btn-publish').addEventListener('click', function () {
+        var content = $('post-content').value.trim();
+        if (!content && photoCount === 0) {
+          UI.toast('写点什么，或者放一张照片吧～', '🌷');
+          return;
+        }
+        UI.withSun(this, 800, '正在发布', function () {
+          Store.commit(function (s) {
+            s.posts.unshift({
+              id: Store.uid('post'), userId: s.me.id, type: 'normal',
+              content: content || '今天也在一起 ❤️',
+              photoCount: photoCount, location: s.me.city,
+              tags: pickedTags.slice(),
+              at: Date.now(), likes: [], comments: []
+            });
+          });
+          UI.flyHearts(this, 8);
+          UI.toast('发布啦，TA 会看到的 ❤️', '✨');
+          setTimeout(function () { location.href = '06-daily.html'; }, 1300);
+        });
+      });
+
+      $('btn-back').addEventListener('click', function () { UI.back('06-daily.html'); });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>首页 · 两个人的小世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/css/app.css" />
+</head>
+<body>
+  <div class="phone">
+    <!-- 微信导航栏 -->
+    <header class="wx-nav" data-od-id="home-nav">
+      <span class="nav-title">两个人的小世界</span>
+      <div class="wx-capsule" aria-hidden="true">
+        <span class="caps-item"><svg class="ic-dots"><use href="#ic-dots"></use></svg></span>
+        <span class="caps-divider"></span>
+        <span class="caps-item"><svg class="ic-ring"><use href="#ic-ring"></use></svg></span>
+      </div>
+    </header>
+
+    <main class="page stack" data-od-id="home-page">
+      <!-- A. 情侣主卡 -->
+      <section class="card card-peach rel couple-hero" data-od-id="home-couple-card">
+        <span class="doodle" style="top:-4px;right:6px;width:34px;height:34px;color:var(--pink-ink);opacity:.55" aria-hidden="true"><svg class="ic"><use href="#ic-flower"></use></svg></span>
+        <span class="doodle" style="bottom:8px;left:8px;width:30px;height:30px;color:var(--sun-ink);opacity:.45" aria-hidden="true"><svg class="ic"><use href="#ic-cat"></use></svg></span>
+        <p class="hero-saying">和你在一起<br />就是最好的日子 <span class="heart-txt">❤️</span></p>
+        <div class="duo">
+          <a href="11-profile.html" aria-label="我的资料与情侣设置" data-od-id="home-avatar-me" style="display:inline-block">
+            <span id="avatar-me"></span>
+            <p class="who" id="name-me">林舟</p>
+          </a>
+          <span class="heart-between"><svg class="ic"><use href="#ic-heart-fill"></use></svg></span>
+          <a href="11-profile.html" aria-label="情侣资料与设置" style="display:inline-block">
+            <span id="avatar-ta"></span>
+            <p class="who" id="name-ta">苏棠</p>
+          </a>
+        </div>
+        <div class="days">
+          <p style="font-size:13px;color:var(--muted)">和宝宝已经</p>
+          <p><span class="num" id="days-num">--</span><span class="day-tag">DAY</span></p>
+          <p class="days-caption" id="next-date-line">下一次见面 · --</p>
+        </div>
+        <div class="hero-meta">
+          <span class="m-chip dist" id="dist-chip"><svg class="ic"><use href="#ic-pin"></use></svg><span id="dist-num">--</span>&nbsp;km</span>
+          <span class="m-chip"><span id="batt-me" class="batt"></span></span>
+          <span class="m-chip"><span id="batt-ta" class="batt"></span></span>
+        </div>
+      </section>
+
+      <!-- B. 双方天气卡 -->
+      <section class="weather-row" data-od-id="home-weather">
+        <div class="card card-blue card-flat weather-cell w-blue">
+          <p class="w-city" id="w-city-me">上海市</p>
+          <div class="w-main">
+            <svg class="ic w-icon" id="w-icon-me"><use href="#ic-cloud"></use></svg>
+            <span class="w-temp" id="w-temp-me">--°</span>
+          </div>
+          <p class="w-cond" id="w-cond-me">--</p>
+          <p class="w-range" id="w-range-me">--</p>
+          <p class="w-updated">更新于 <span id="w-up-me">--</span></p>
+        </div>
+        <div class="card card-sun card-flat weather-cell w-sun">
+          <p class="w-city" id="w-city-ta">北京市</p>
+          <div class="w-main">
+            <svg class="ic w-icon" id="w-icon-ta"><use href="#ic-sun"></use></svg>
+            <span class="w-temp" id="w-temp-ta">--°</span>
+          </div>
+          <p class="w-cond" id="w-cond-ta">--</p>
+          <p class="w-range" id="w-range-ta">--</p>
+          <p class="w-updated">更新于 <span id="w-up-ta">--</span></p>
+        </div>
+      </section>
+
+      <!-- C. 提醒 / 叫醒服务 -->
+      <button class="card card-sun pressable remind-row" data-od-id="home-remind" id="remind-entry" style="padding:14px 16px">
+        <span class="bell-badge" id="remind-bell"><svg class="ic"><use href="#ic-bell"></use></svg></span>
+        <span class="remind-main">
+          <span class="r-title" style="display:block">贴心提醒 · 提醒服务</span>
+          <span class="r-sub" style="display:block">为 TA 设置一次温柔提醒</span>
+        </span>
+        <span class="go-arrow"><svg class="ic"><use href="#ic-arrow-r"></use></svg></span>
+      </button>
+
+      <!-- D. 同步心情 -->
+      <section class="card card-pink" data-od-id="home-mood">
+        <div class="row-between" style="margin-bottom:10px">
+          <div>
+            <p class="card-title">同步心情 <span class="heart-txt">❤️</span></p>
+            <p class="card-sub">点一下，告诉 TA 你今天的心情</p>
+          </div>
+          <span class="chip pink" style="font-weight:700">今天</span>
+        </div>
+        <div class="mood-now">
+          <span class="mood-face" id="mood-face-me"></span>
+          <div class="mood-info">
+            <p class="m-line" id="mood-line-me">--</p>
+            <p class="m-at" id="mood-at-me">--</p>
+          </div>
+        </div>
+        <div class="mood-now" style="margin-top:12px">
+          <span class="mood-face" id="mood-face-ta"></span>
+          <div class="mood-info">
+            <p class="m-line" id="mood-line-ta">--</p>
+            <p class="m-at" id="mood-at-ta">--</p>
+            <div class="mood-quick">
+              <button class="btn btn-soft btn-sm" data-act="hug">抱抱 TA</button>
+              <button class="btn btn-soft btn-sm" data-act="here">我在哦</button>
+            </div>
+          </div>
+        </div>
+        <a class="btn btn-ghost btn-block" href="02-mood.html" style="margin-top:12px">修改今天的心情</a>
+      </section>
+
+      <!-- E. 一键想你 -->
+      <button class="btn btn-primary btn-block" id="miss-you" data-od-id="home-miss-you" style="min-height:52px;font-size:16px;border-radius:16px">
+        <svg class="ic"><use href="#ic-heart-fill"></use></svg>想你了
+      </button>
+      <p style="text-align:center;font-size:11.5px;color:var(--muted)">按下就会告诉 TA，你正在想 TA ❤️</p>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="tabbar" data-od-id="tabbar">
+      <a class="tab active" href="01-home.html"><svg class="ic"><use href="#ic-home"></use></svg><span>首页</span></a>
+      <a class="tab" href="03-eat.html"><svg class="ic"><use href="#ic-bowl"></use></svg><span>好好吃饭</span></a>
+      <a class="tab" href="06-daily.html"><svg class="ic"><use href="#ic-journal"></use></svg><span>日常</span></a>
+      <a class="tab" href="08-plan.html"><svg class="ic"><use href="#ic-calendar"></use></svg><span>计划</span></a>
+    </nav>
+  </div>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/app.js"></script>
+  <script>
+    (function () {
+      var S = Store.get();
+      var $ = function (id) { return document.getElementById(id); };
+
+      function battHtml(pct) {
+        var cls = pct < 30 ? 'low' : 'ok';
+        return '<span class="batt-track"><span class="batt-fill ' + cls + '" style="width:' + pct + '%"></span></span>' +
+          '<span class="batt-num">' + pct + '%</span>';
+      }
+      function weatherIcon(cond) { return cond === '晴' ? 'ic-sun' : cond === '雨' ? 'ic-cloud' : 'ic-cloud'; }
+
+      function render() {
+        var st = Store.get();
+        /* 情侣主卡 */
+        $('name-me').textContent = st.me.nickname;
+        $('name-ta').textContent = st.ta.nickname;
+        $('avatar-me').innerHTML = Avatar(st.me.id, 62);
+        $('avatar-ta').innerHTML = Avatar(st.ta.id, 62);
+        $('days-num').textContent = Store.daysTogether(st.couple.start);
+        $('dist-num').textContent = st.couple.distanceKm.toFixed(1);
+        $('batt-me').innerHTML = '<span style="font-weight:700">' + st.me.nickname + '</span>' + battHtml(st.me.battery);
+        $('batt-ta').innerHTML = '<span style="font-weight:700">' + st.ta.nickname + '</span>' + battHtml(st.ta.battery);
+
+        /* 下一次见面：约饭 + 计划里最近的一条 */
+        var upcoming = [];
+        st.meals.forEach(function (m) { if (m.date >= Store.today()) upcoming.push({ date: m.date, title: m.kind }); });
+        st.events.forEach(function (e) { if (e.date >= Store.today() && e.type !== 'todo') upcoming.push({ date: e.date, title: e.title }); });
+        upcoming.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+        $('next-date-line').textContent = upcoming.length
+          ? '下一次见面 · ' + Store.countdown(upcoming[0].date) + ' · ' + upcoming[0].title
+          : '还没有约好下一次见面，去计划里安排吧';
+
+        /* 天气 */
+        [['me', st.couple.weather.me], ['ta', st.couple.weather.ta]].forEach(function (pair) {
+          var key = pair[0], w = pair[1];
+          $('w-city-' + key).textContent = w.city;
+          $('w-temp-' + key).textContent = w.temp + '°';
+          $('w-cond-' + key).textContent = w.cond;
+          $('w-range-' + key).textContent = w.high + '° / ' + w.low + '°';
+          $('w-up-' + key).textContent = w.updatedAt;
+          $('w-icon-' + key).querySelector('use').setAttribute('href', '#' + weatherIcon(w.cond));
+        });
+
+        /* 心情 */
+        var mine = Store.moodMeta(st.mood.me.type);
+        $('mood-face-me').className = 'mood-face ' + mine.tint;
+        $('mood-face-me').innerHTML = Icon(mine.icon);
+        $('mood-line-me').innerHTML = '<span class="who">' + esc(st.me.nickname) + '</span>今天的心情：' + esc(mine.type);
+        $('mood-at-me').textContent = '更新于 ' + Store.fmtRel(st.mood.me.at);
+
+        var hers = Store.moodMeta(st.mood.ta.type);
+        $('mood-face-ta').className = 'mood-face ' + hers.tint;
+        $('mood-face-ta').innerHTML = Icon(hers.icon);
+        $('mood-line-ta').innerHTML = '<span class="who">' + esc(st.ta.nickname) + '</span>今天的心情：' + esc(hers.type);
+        $('mood-at-ta').textContent = '更新于 ' + Store.fmtRel(st.mood.ta.at);
+      }
+      render();
+
+      /* 想你了：爱心飞出 */
+      $('miss-you').addEventListener('click', function (e) {
+        UI.flyHearts(this, 10);
+        UI.toast('已告诉 ' + Store.get().ta.nickname + '，TA 收到啦', '❤️');
+      });
+
+      /* 抱抱 / 我在哦 轻互动（PRD §7.5） */
+      document.querySelector('[data-act="hug"]').addEventListener('click', function (e) {
+        UI.flyHearts(this, 6);
+        UI.toast('抱抱已送达 ' + Store.get().ta.nickname, '🤗');
+      });
+      document.querySelector('[data-act="here"]').addEventListener('click', function () {
+        UI.toast('已告诉 ' + Store.get().ta.nickname + '：我在哦', '💛');
+      });
+
+      /* 提醒 / 叫醒服务入口 */
+      $('remind-entry').addEventListener('click', function () {
+        var sheet = UI.openSheet(
+          '<div class="sheet-handle"></div>' +
+          '<p class="sheet-title">贴心提醒</p>' +
+          '<p class="sheet-sub">为 TA 设置一次温柔提醒，轻一点别太频繁～</p>' +
+          '<div class="setting-row">' +
+            '<span class="s-ic">' + Icon('ic-cup') + '</span>' +
+            '<div class="s-main"><p class="s-title">提醒 TA 喝水</p><p class="s-sub">下午茶时间提醒 TA 喝口水</p></div>' +
+            '<span class="switch"><input type="checkbox" id="sw-water" aria-label="提醒 TA 喝水" /><span class="track"></span></span>' +
+          '</div>' +
+          '<div class="setting-row">' +
+            '<span class="s-ic">' + Icon('ic-moon') + '</span>' +
+            '<div class="s-main"><p class="s-title">明早叫醒 TA</p><p class="s-sub">07:30 的温柔叫醒服务</p></div>' +
+            '<span class="switch"><input type="checkbox" id="sw-wake" aria-label="明早叫醒 TA" /><span class="track"></span></span>' +
+          '</div>' +
+          '<button class="btn btn-primary btn-block" id="sheet-set" style="margin-top:14px">设置提醒</button>'
+        );
+        sheet.el.querySelector('#sheet-set').addEventListener('click', function (btn) {
+          var water = sheet.el.querySelector('#sw-water').checked;
+          var wake = sheet.el.querySelector('#sw-wake').checked;
+          sheet.close();
+          if (!water && !wake) { UI.toast('先选一个提醒，再点设置哦～', '🌸'); return; }
+          var msgs = [];
+          if (water) msgs.push('提醒 TA 喝水');
+          if (wake) msgs.push('明早叫醒 TA');
+          var bell = $('remind-bell');
+          bell.classList.remove('shake'); void bell.offsetWidth; bell.classList.add('shake');
+          UI.withSun(this, 700, '正在设置', function () {
+            UI.toast(msgs.join('、') + ' · 已为 TA 设置 ❤️', '🔔');
+          });
+        });
+      });
+
+      /* 跨页面数据变化实时刷新 */
+      UI.onUpdate(render);
+    })();
+  </script>
+</body>
+</html>

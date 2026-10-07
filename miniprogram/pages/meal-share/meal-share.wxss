@@ -1,0 +1,42 @@
+/* 餐食分享 · 页面专属样式 */
+
+.form-card {
+  padding: 36rpx 32rpx;
+}
+
+.share-head {
+  padding: 4rpx 4rpx 20rpx;
+}
+
+.share-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.filled-photo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 26rpx;
+  background-color: var(--green-soft);
+  background-repeat: no-repeat;
+  background-size: 56% 56%;
+  background-position: center;
+}
+
+.share-field {
+  margin-top: 28rpx;
+}
+
+.share-textarea {
+  min-height: 184rpx;
+}
+
+.send-btn {
+  min-height: 100rpx;
+  font-size: 31rpx;
+  margin-top: 28rpx;
+}

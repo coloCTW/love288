@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>同步心情 · 两个人的小世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/css/app.css" />
+</head>
+<body>
+  <div class="phone">
+    <header class="wx-nav" data-od-id="mood-nav">
+      <button class="nav-back" id="btn-back" aria-label="返回"><svg class="ic"><use href="#ic-back"></use></svg></button>
+      <span class="nav-title">同步心情</span>
+      <div class="wx-capsule" aria-hidden="true">
+        <span class="caps-item"><svg class="ic-dots"><use href="#ic-dots"></use></svg></span>
+        <span class="caps-divider"></span>
+        <span class="caps-item"><svg class="ic-ring"><use href="#ic-ring"></use></svg></span>
+      </div>
+    </header>
+
+    <main class="page stack" data-od-id="mood-page">
+      <div class="page-head">
+        <p class="hand">今天的心情是？</p>
+        <p class="head-sub">选一个，轻轻告诉 TA 吧 ❤️</p>
+      </div>
+
+      <section class="mood-grid" data-od-id="mood-grid" id="mood-grid"></section>
+
+      <p style="text-align:center;font-size:11.5px;color:var(--muted);margin-top:4px">一天只保留一个心情，随时可以改～</p>
+
+      <button class="btn btn-primary btn-block" id="btn-confirm" data-od-id="mood-confirm" style="min-height:52px;font-size:16px;border-radius:16px">确定选择</button>
+    </main>
+  </div>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/app.js"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById('mood-grid');
+      var current = Store.get().mood.me.type;
+      var selected = current;
+
+      /* 渲染 9 张心情卡 */
+      Store.MOODS.forEach(function (m) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mood-cell' + (m.type === current ? ' selected' : '');
+        btn.setAttribute('data-od-id', 'mood-cell-' + m.type);
+        btn.setAttribute('aria-pressed', m.type === current ? 'true' : 'false');
+        btn.innerHTML =
+          '<span class="check-dot">' + Icon('ic-check') + '</span>' +
+          '<span class="mood-face ' + m.tint + '">' + Icon(m.icon) + '</span>' +
+          '<span class="m-name">' + m.type + '</span>';
+        btn.addEventListener('click', function () {
+          selected = m.type;
+          var cells = grid.querySelectorAll('.mood-cell');
+          for (var i = 0; i < cells.length; i++) {
+            var isSel = cells[i] === btn;
+            cells[i].classList.toggle('selected', isSel);
+            cells[i].setAttribute('aria-pressed', isSel ? 'true' : 'false');
+            if (isSel) { cells[i].classList.remove('selected'); void cells[i].offsetWidth; cells[i].classList.add('selected'); }
+          }
+        });
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('btn-back').addEventListener('click', function () { UI.back('01-home.html'); });
+
+      document.getElementById('btn-confirm').addEventListener('click', function () {
+        if (!selected) { UI.toast('先选一个心情哦～', '🌸'); return; }
+        UI.withSun(this, 700, '正在同步', function () {
+          Store.commit(function (s) {
+            s.mood.me = { type: selected, at: Date.now() };
+          });
+          UI.flyHearts(this, 8);
+          UI.toast('好啦，已同步给 TA ❤️', '💌');
+          setTimeout(function () { location.href = '01-home.html'; }, 1300);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

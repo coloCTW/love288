@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>计划 · 两个人的小世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/css/app.css" />
+</head>
+<body>
+  <div class="phone">
+    <header class="wx-nav" data-od-id="plan-nav">
+      <span class="nav-title">计划</span>
+      <div class="wx-capsule" aria-hidden="true">
+        <span class="caps-item"><svg class="ic-dots"><use href="#ic-dots"></use></svg></span>
+        <span class="caps-divider"></span>
+        <span class="caps-item"><svg class="ic-ring"><use href="#ic-ring"></use></svg></span>
+      </div>
+    </header>
+
+    <main class="page stack" data-od-id="plan-page">
+      <div class="page-head">
+        <p class="hand">把约好的日子，提前收藏起来</p>
+        <p class="head-sub">每一天的期待，都标在月历上 ❤️</p>
+      </div>
+
+      <!-- 月历 -->
+      <section class="card" data-od-id="plan-calendar">
+        <div class="cal-head">
+          <button class="cal-nav" id="cal-prev" aria-label="上一个月"><svg class="ic"><use href="#ic-back"></use></svg></button>
+          <p class="cal-title" id="cal-title">--</p>
+          <button class="cal-nav" id="cal-next" aria-label="下一个月"><svg class="ic"><use href="#ic-arrow-r"></use></svg></button>
+        </div>
+        <div class="cal-grid" id="cal-wd-row">
+          <span class="cal-wd">一</span><span class="cal-wd">二</span><span class="cal-wd">三</span><span class="cal-wd">四</span><span class="cal-wd">五</span><span class="cal-wd">六</span><span class="cal-wd">日</span>
+        </div>
+        <div class="cal-grid-wrap">
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <div class="cal-legend">
+          <span class="lg"><span class="mk heart"></span>约会 / 约饭</span>
+          <span class="lg"><span class="mk star"></span>纪念日</span>
+          <span class="lg"><span class="mk dot"></span>待办</span>
+          <span class="lg" style="margin-left:auto"><span class="mk" style="width:8px;height:8px;border-radius:50%;background:var(--accent-soft);border:1.5px solid var(--accent)"></span>今天</span>
+        </div>
+      </section>
+
+      <!-- 即将到来的约会 -->
+      <section data-od-id="plan-upcoming">
+        <div class="row-between" style="padding:2px 4px">
+          <p style="font-size:14.5px;font-weight:700" id="upcoming-title">即将到来的约会</p>
+          <button class="btn btn-ghost btn-sm" id="btn-all" style="border-radius:999px">查看全部</button>
+        </div>
+        <p id="day-filter-hint" style="font-size:12px;color:var(--muted);padding:0 4px 2px;display:none"></p>
+        <div class="date-stack" id="date-stack" style="margin-top:8px"></div>
+      </section>
+
+      <a class="btn btn-soft btn-block" href="09-add-date.html" data-od-id="plan-add-date" style="margin-top:2px">
+        <svg class="ic"><use href="#ic-plus"></use></svg>添加约会
+      </a>
+    </main>
+
+    <nav class="tabbar" data-od-id="tabbar">
+      <a class="tab" href="01-home.html"><svg class="ic"><use href="#ic-home"></use></svg><span>首页</span></a>
+      <a class="tab" href="03-eat.html"><svg class="ic"><use href="#ic-bowl"></use></svg><span>好好吃饭</span></a>
+      <a class="tab" href="06-daily.html"><svg class="ic"><use href="#ic-journal"></use></svg><span>日常</span></a>
+      <a class="tab active" href="08-plan.html"><svg class="ic"><use href="#ic-calendar"></use></svg><span>计划</span></a>
+    </nav>
+  </div>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/app.js"></script>
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var today = new Date();
+      var viewY = today.getFullYear();
+      var viewM = today.getMonth();
+      var selectedDate = null;
+      var showAll = false;
+      var KINDS = { date: 'card-pink', meal: 'card-green', anniversary: 'card-sun', todo: 'card-blue' };
+      var KIND_LABEL = { date: '约会', meal: '约饭', anniversary: '纪念日', todo: '待办' };
+
+      /* 全部「可上日历」的事件（约会/约饭/纪念日/待办） */
+      function allEvents(st) {
+        var list = st.events.map(function (e) { return e; });
+        return list;
+      }
+      function markOf(ev) {
+        if (ev.type === 'anniversary') return '<span class="mk star"></span>';
+        if (ev.type === 'todo') return '<span class="mk dot"></span>';
+        return '<span class="mk heart"></span>';
+      }
+
+      function renderCal(anim) {
+        var st = Store.get();
+        $('cal-title').textContent = viewY + ' 年 ' + (viewM + 1) + ' 月';
+
+        var grid = $('cal-grid');
+        var evByDate = {};
+        allEvents(st).forEach(function (e) {
+          var d = new Date(e.date + 'T00:00:00');
+          if (d.getFullYear() === viewY && d.getMonth() === viewM) {
+            (evByDate[e.date] = evByDate[e.date] || []).push(e);
+          }
+        });
+
+        var first = new Date(viewY, viewM, 1);
+        var lead = (first.getDay() + 6) % 7;               /* 周一开头 */
+        var daysInMonth = new Date(viewY, viewM + 1, 0).getDate();
+        var todayIso = Store.today();
+        var html = '';
+
+        /* 上月补白 */
+        var prevDays = new Date(viewY, viewM, 0).getDate();
+        for (var i = lead - 1; i >= 0; i--) {
+          html += '<span class="cal-cell other" aria-hidden="true"><span class="d-num">' + (prevDays - i) + '</span></span>';
+        }
+        /* 当月 */
+        for (var d = 1; d <= daysInMonth; d++) {
+          var isoStr = viewY + '-' + String(viewM + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+          var cls = 'cal-cell';
+          if (isoStr === todayIso) cls += ' today';
+          if (isoStr === selectedDate) cls += ' selected';
+          var marks = (evByDate[isoStr] || []).map(markOf).join('');
+          html += '<button type="button" class="' + cls + '" data-date="' + isoStr + '" data-od-id="cal-day-' + isoStr + '" aria-label="' + isoStr + '">' +
+            '<span class="d-num">' + d + '</span>' +
+            '<span class="d-marks">' + marks + '</span>' +
+          '</button>';
+        }
+        /* 下月补白 */
+        var tail = (7 - ((lead + daysInMonth) % 7)) % 7;
+        for (var t = 1; t <= tail; t++) {
+          html += '<span class="cal-cell other" aria-hidden="true"><span class="d-num">' + t + '</span></span>';
+        }
+
+        grid.innerHTML = html;
+        if (anim) {
+          grid.classList.remove('slide-in', 'slide-out');
+          void grid.offsetWidth;
+          grid.classList.add(anim === 'next' ? 'slide-in' : 'slide-in');
+        }
+        bindCalCells();
+      }
+
+      function bindCalCells() {
+        var cells = $('cal-grid').querySelectorAll('.cal-cell[data-date]');
+        for (var i = 0; i < cells.length; i++) {
+          cells[i].addEventListener('click', function () {
+            var d = this.getAttribute('data-date');
+            selectedDate = (selectedDate === d) ? null : d;
+            renderCal();
+            renderStack();
+          });
+        }
+      }
+
+      /* 约会卡堆叠 */
+      function renderStack() {
+        var st = Store.get();
+        var upcoming = allEvents(st)
+          .filter(function (e) { return e.type !== 'todo' && e.date >= Store.today(); })
+          .sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+
+        if (selectedDate) {
+          $('upcoming-title').textContent = '这一天 · ' + Store.fmtDate(selectedDate);
+          $('day-filter-hint').style.display = 'block';
+          $('day-filter-hint').textContent = '正在只看这一天，点同一日期或「查看全部」回到所有约会';
+          upcoming = upcoming.filter(function (e) { return e.date === selectedDate; });
+        } else {
+          $('upcoming-title').textContent = '即将到来的约会';
+          $('day-filter-hint').style.display = 'none';
+        }
+
+        var shown = showAll ? upcoming : upcoming.slice(0, 3);
+        var stack = $('date-stack');
+        if (!upcoming.length) {
+          stack.innerHTML = '<div class="empty">' +
+            '<span class="e-ill" style="display:flex;align-items:center;gap:6px;justify-content:center;width:auto">' + Avatar('lin', 42) + Avatar('su', 42) + '</span>' +
+            '<p class="e-title">' + (selectedDate ? '这一天还没有安排' : '还没有约好的日子') + '</p>' +
+            '<p class="e-sub">一起安排第一场约会吧 ❤️</p>' +
+          '</div>';
+        } else {
+          stack.innerHTML = shown.map(function (e, i) {
+            var kind = KINDS[e.type] || 'card-pink';
+            var note = e.note ? '<div class="dc-foot">“' + esc(e.note) + '”</div>' : '';
+            return '<a class="card ' + kind + ' date-card pressable" href="10-date-detail.html?id=' + encodeURIComponent(e.id) + '"' +
+              ' data-od-id="date-card-' + e.id + '" style="animation:fade-up .35s ease both;animation-delay:' + (i * 60) + 'ms">' +
+              '<div class="dc-top">' +
+                '<span class="dc-title">' + esc(e.title) + '</span>' +
+                '<span class="dc-when ' + (e.date === Store.today() ? 'when-soon' : 'when-later') + '">' +
+                  '<svg class="ic" style="display:inline"><use href="#ic-clock"></use></svg> ' + Store.countdown(e.date) + '</span>' +
+              '</div>' +
+              '<div class="dc-meta">' +
+                '<span style="display:inline-flex;align-items:center;gap:4px">' + Icon('ic-calendar') + Store.fmtDate(e.date) + (e.time ? ' ' + e.time : '') + '</span>' +
+                (e.location ? '<span style="display:inline-flex;align-items:center;gap:4px">' + Icon('ic-pin') + esc(e.city ? e.city + ' · ' + e.location : e.location) + '</span>' : '') +
+              '</div>' +
+              note +
+            '</a>';
+          }).join('');
+        }
+
+        var btnAll = $('btn-all');
+        if (upcoming.length > 3) {
+          btnAll.style.display = '';
+          btnAll.textContent = showAll ? '收起' : '查看全部';
+        } else {
+          btnAll.style.display = 'none';
+        }
+      }
+
+      $('btn-all').addEventListener('click', function () {
+        showAll = !showAll;
+        renderStack();
+      });
+
+      $('cal-prev').addEventListener('click', function () {
+        viewM--;
+        if (viewM < 0) { viewM = 11; viewY--; }
+        renderCal('prev');
+      });
+      $('cal-next').addEventListener('click', function () {
+        viewM++;
+        if (viewM > 11) { viewM = 0; viewY++; }
+        renderCal('next');
+      });
+
+      renderCal();
+      renderStack();
+      UI.onUpdate(function () { renderCal(); renderStack(); });
+    })();
+  </script>
+</body>
+</html>

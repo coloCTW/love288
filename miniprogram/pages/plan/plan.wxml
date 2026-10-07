@@ -1,0 +1,112 @@
+<view class="page stack tab-page-pad">
+  <view class="page-head">
+    <image src="../../images/plan-header.jpg" style="width: 100%;" mode="widthFix"/>
+  </view>
+
+  <!-- 月历 -->
+  <view class="card cal-card" style="margin-top: 350rpx;">
+    <view class="cal-head">
+      <view class="cal-nav" style="background-image:url('{{icons.back}}');" bindtap="onPrevMonth" hover-class="btn-press"></view>
+      <view class="cal-title">{{calTitle}}</view>
+      <view class="cal-nav" style="background-image:url('{{icons.next}}');" bindtap="onNextMonth" hover-class="btn-press"></view>
+    </view>
+    <view class="cal-grid cal-wd-row">
+      <view class="cal-wd">一</view>
+      <view class="cal-wd">二</view>
+      <view class="cal-wd">三</view>
+      <view class="cal-wd">四</view>
+      <view class="cal-wd">五</view>
+      <view class="cal-wd">六</view>
+      <view class="cal-wd">日</view>
+    </view>
+    <view class="cal-grid-wrap">
+      <view class="cal-grid {{calAnimCls}}">
+        <view
+          wx:for="{{cells}}"
+          wx:key="k"
+          class="{{item.cls}}"
+          data-date="{{item.iso}}"
+          bindtap="onDayTap"
+          hover-class="btn-press"
+        >
+          <view class="d-num">{{item.num}}</view>
+          <view class="d-marks" wx:if="{{item.marks.length}}">
+            <view wx:for="{{item.marks}}" wx:for-item="mk" wx:key="*this" class="mk" style="background-image:url('{{mk}}');"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="cal-legend">
+      <view class="lg">
+        <view class="mk" style="background-image:url('{{icons.heartMk}}');"></view>
+        <text>约会 / 约饭</text>
+      </view>
+      <view class="lg">
+        <view class="mk" style="background-image:url('{{icons.starMk}}');"></view>
+        <text>纪念日</text>
+      </view>
+      <view class="lg">
+        <view class="mk" style="background-image:url('{{icons.dotMk}}');"></view>
+        <text>待办</text>
+      </view>
+      <view class="lg lg-today">
+        <view class="today-dot"></view>
+        <text>今天</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 即将到来的约会 -->
+  <view class="upcoming-sec">
+    <view class="row-between upcoming-head">
+      <view class="upcoming-title">{{upcomingTitle}}</view>
+      <button wx:if="{{showAllBtn}}" class="btn btn-ghost btn-sm btn-all" hover-class="btn-press" bindtap="onToggleAll">{{showAllBtn.label}}</button>
+    </view>
+    <view wx:if="{{hintVisible}}" class="day-hint">{{hintText}}</view>
+    <block wx:if="{{upcoming.length}}">
+      <view class="date-stack">
+        <view
+          wx:for="{{upcoming}}"
+          wx:key="id"
+          class="card {{item.kind}} date-card fade-up"
+          style="animation-delay:{{item.delay}};"
+          data-id="{{item.id}}"
+          bindtap="onCardTap"
+          hover-class="btn-press"
+        >
+          <view class="dc-top">
+            <view class="dc-title">{{item.title}}</view>
+            <view class="dc-when {{item.whenCls}}">
+              <view class="dc-clock" style="background-image:url('{{item.whenIcon}}');"></view>
+              <text>{{item.when}}</text>
+            </view>
+          </view>
+          <view class="dc-meta">
+            <view class="dm-item">
+              <view class="dm-ic" style="background-image:url('{{icons.calendar}}');"></view>
+              <text>{{item.dateLine}}</text>
+            </view>
+            <view class="dm-item" wx:if="{{item.locLine}}">
+              <view class="dm-ic" style="background-image:url('{{icons.pin}}');"></view>
+              <text>{{item.locLine}}</text>
+            </view>
+          </view>
+          <view class="dc-foot" wx:if="{{item.note}}">“{{item.note}}”</view>
+        </view>
+      </view>
+    </block>
+    <view wx:else class="empty">
+      <view class="e-ill">
+        <view class="avatar av-42" style="background-image:url('{{icons.avLin}}');"></view>
+        <view class="avatar av-42" style="background-image:url('{{icons.avSu}}');"></view>
+      </view>
+      <view class="e-title">{{emptyTitle}}</view>
+      <view class="e-sub">一起安排第一场约会吧 ❤️</view>
+    </view>
+  </view>
+
+  <button class="btn btn-soft btn-block add-date-btn" hover-class="btn-press" bindtap="goAddDate">
+    <view class="ic ic-24" style="background-image:url('{{icons.plus}}');"></view>
+    <text>添加约会</text>
+  </button>
+</view>

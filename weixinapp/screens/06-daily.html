@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>日常 · 两个人的小世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/css/app.css" />
+</head>
+<body>
+  <div class="phone">
+    <header class="wx-nav" data-od-id="daily-nav">
+      <span class="nav-title">日常</span>
+      <div class="wx-capsule" aria-hidden="true">
+        <span class="caps-item"><svg class="ic-dots"><use href="#ic-dots"></use></svg></span>
+        <span class="caps-divider"></span>
+        <span class="caps-item"><svg class="ic-ring"><use href="#ic-ring"></use></svg></span>
+      </div>
+    </header>
+
+    <main class="page stack" data-od-id="daily-page">
+      <div class="page-head">
+        <p class="hand">日常 <span class="heart-txt">❤️</span></p>
+        <p class="head-sub">把每一次的点滴，都变成我们的回忆</p>
+      </div>
+
+      <section id="feed" data-od-id="daily-feed" style="display:flex;flex-direction:column;gap:14px"></section>
+
+      <a class="fab" href="07-new-post.html" data-od-id="daily-fab" aria-label="发布动态">
+        <svg class="ic"><use href="#ic-plus"></use></svg>
+      </a>
+    </main>
+
+    <nav class="tabbar" data-od-id="tabbar">
+      <a class="tab" href="01-home.html"><svg class="ic"><use href="#ic-home"></use></svg><span>首页</span></a>
+      <a class="tab" href="03-eat.html"><svg class="ic"><use href="#ic-bowl"></use></svg><span>好好吃饭</span></a>
+      <a class="tab active" href="06-daily.html"><svg class="ic"><use href="#ic-journal"></use></svg><span>日常</span></a>
+      <a class="tab" href="08-plan.html"><svg class="ic"><use href="#ic-calendar"></use></svg><span>计划</span></a>
+    </nav>
+  </div>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/app.js"></script>
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var feed = $('feed');
+      var firstRender = true;
+      var lastKey = '';
+
+      function postTypeTag(p) {
+        if (p.type === 'meal') return '<span class="chip green post-type-tag" style="display:inline-flex">好好吃饭</span>';
+        if (p.type === 'date') return '<span class="chip pink post-type-tag" style="display:inline-flex">约会记录</span>';
+        return '';
+      }
+
+      function postHtml(p, st) {
+        var user = p.userId === st.ta.id ? st.ta : st.me;
+        var isMine = p.userId === st.me.id;
+        var liked = p.likes.indexOf(st.me.id) >= 0;
+        var photos = '';
+        if (p.photoCount > 0) {
+          var tiles = '';
+          for (var i = 0; i < p.photoCount; i++) {
+            tiles += '<span class="p-photo">' + Icon(p.type === 'meal' ? 'ic-bowl' : 'ic-photo') + '</span>';
+          }
+          photos = '<div class="post-photos' + (p.photoCount === 1 ? ' one' : '') + '">' + tiles + '</div>';
+        }
+        var tags = (p.tags || []).map(function (t) { return '<span class="chip pink">#' + esc(t) + '</span>'; }).join('');
+        var cmts = (p.comments || []).map(function (c) {
+          var cu = c.userId === st.ta.id ? st.ta : st.me;
+          return '<div class="cmt">' + Avatar(c.userId, 26) +
+            '<span class="c-body"><b>' + esc(cu.nickname) + '</b>：' + esc(c.content) + '</span></div>';
+        }).join('');
+        return '<article class="card post-card" data-od-id="post-' + p.id + '">' +
+          '<div class="post-head">' + Avatar(p.userId, 40) +
+            '<div class="p-who">' +
+              '<p class="p-name">' + esc(user.nickname) + '</p>' +
+              '<p class="p-meta">' + Store.fmtRel(p.at) + (p.location ? ' · ' + esc(p.location) : '') + '</p>' +
+            '</div>' +
+            (isMine ? '<button class="post-more" data-act="more" data-post="' + p.id + '" aria-label="更多操作">' + Icon('ic-more') + '</button>' : '') +
+          '</div>' +
+          '<div class="post-body">' + postTypeTag(p) + esc(p.content).replace(/\n/g, '<br />') + '</div>' +
+          photos +
+          (tags ? '<div class="post-tags">' + tags + '</div>' : '') +
+          '<div class="post-actions">' +
+            '<button class="post-act' + (liked ? ' liked' : '') + '" data-act="like" data-post="' + p.id + '" aria-pressed="' + liked + '" aria-label="点赞">' +
+              Icon(liked ? 'ic-heart-fill' : 'ic-heart') + '<span class="num">' + p.likes.length + '</span>' +
+            '</button>' +
+            '<button class="post-act" data-act="comment" data-post="' + p.id + '" aria-label="评论">' +
+              Icon('ic-chat') + '<span class="num">' + (p.comments || []).length + '</span>' +
+            '</button>' +
+          '</div>' +
+          (cmts ? '<div class="post-comments">' + cmts + '</div>' : '') +
+        '</article>';
+      }
+
+      function render(animate) {
+        var st = Store.get();
+        var posts = st.posts.slice().sort(function (a, b) { return b.at - a.at; });
+        /* 结构键：点赞/评论变化不整卡重绘，保住爱心缩放动画 */
+        var key = JSON.stringify(posts.map(function (p) {
+          return { id: p.id, userId: p.userId, type: p.type, content: p.content, photoCount: p.photoCount, tags: p.tags, at: p.at };
+        }));
+        if (key === lastKey && !firstRender) return;
+        lastKey = key;
+
+        if (!posts.length) {
+          feed.innerHTML = '<div class="empty">' +
+            '<span class="e-ill" style="display:flex;align-items:center;gap:6px;justify-content:center;width:auto">' + Avatar('lin', 42) + Avatar('su', 42) + '</span>' +
+            '<p class="e-title">还没有记录哦</p>' +
+            '<p class="e-sub">一起写下今天的第一件小事吧 ❤️</p>' +
+          '</div>';
+        } else {
+          feed.innerHTML = posts.map(function (p) { return postHtml(p, st); }).join('');
+        }
+        if (animate && firstRender) {
+          var items = feed.children;
+          for (var i = 0; i < items.length; i++) {
+            items[i].classList.add('fade-up');
+            items[i].style.animationDelay = Math.min(i * 60, 300) + 'ms';
+          }
+        }
+        firstRender = false;
+      }
+      render(true);
+
+      /* 事件委托：点赞 / 评论 / 更多 */
+      feed.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-act]');
+        if (!btn) return;
+        var postId = btn.getAttribute('data-post');
+        var act = btn.getAttribute('data-act');
+
+        if (act === 'like') {
+          var st = Store.get();
+          var p = st.posts.filter(function (x) { return x.id === postId; })[0];
+          if (!p) return;
+          var idx = p.likes.indexOf(st.me.id);
+          if (idx >= 0) { p.likes.splice(idx, 1); }
+          else {
+            p.likes.push(st.me.id);
+            UI.flyHearts(btn, 5);
+          }
+          Store.commit(function (s) { /* 直接改引用即可持久化 */ });
+          btn.classList.remove('liked'); void btn.offsetWidth;
+          if (p.likes.indexOf(st.me.id) >= 0) btn.classList.add('liked');
+          btn.querySelector('.num').textContent = p.likes.length;
+          btn.querySelector('use').setAttribute('href', '#' + (p.likes.indexOf(st.me.id) >= 0 ? 'ic-heart-fill' : 'ic-heart'));
+          btn.setAttribute('aria-pressed', p.likes.indexOf(st.me.id) >= 0 ? 'true' : 'false');
+        }
+
+        if (act === 'comment') openComment(postId);
+
+        if (act === 'more') {
+          var mine = Store.get().posts.filter(function (x) { return x.id === postId; })[0];
+          if (!mine || mine.userId !== Store.get().me.id) return;
+          UI.confirm({
+            ill: Icon('ic-trash'),
+            title: '删除这条日常？',
+            sub: '删除后就看不到啦，真的要删吗',
+            ok: '删除这条',
+            danger: true
+          }).then(function (ok) {
+            if (!ok) return;
+            Store.commit(function (s) {
+              s.posts = s.posts.filter(function (x) { return x.id !== postId; });
+            });
+            UI.toast('已经删除啦', '🍃');
+            render(false);
+          });
+        }
+      });
+
+      /* 评论底部面板（PRD §11.6：仅情侣双方可评论） */
+      function openComment(postId) {
+        var st = Store.get();
+        var p = st.posts.filter(function (x) { return x.id === postId; })[0];
+        if (!p) return;
+        var sheet = UI.openSheet(
+          '<div class="sheet-handle"></div>' +
+          '<p class="sheet-title">评论</p>' +
+          '<p class="sheet-sub">只有我们两个人看得到哦</p>' +
+          '<div class="post-comments" style="margin-top:12px" id="cmt-list">' +
+            ((p.comments || []).map(function (c) {
+              var cu = c.userId === st.ta.id ? st.ta : st.me;
+              return '<div class="cmt">' + Avatar(c.userId, 26) +
+                '<span class="c-body"><b>' + esc(cu.nickname) + '</b>：' + esc(c.content) + '</span></div>';
+            }).join('') || '<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:6px">还没有评论，说点什么吧～</p>') +
+          '</div>' +
+          '<div class="cmt-input-row">' + Avatar('lin', 34) +
+            '<input class="input" id="cmt-input" maxlength="40" placeholder="写点什么…" aria-label="评论内容" />' +
+            '<button class="btn btn-primary" id="cmt-send">发送</button>' +
+          '</div>'
+        );
+        var input = sheet.el.querySelector('#cmt-input');
+        input.focus();
+        function send() {
+          var val = input.value.trim();
+          if (!val) { UI.toast('先写点什么吧～', '💬'); return; }
+          Store.commit(function (s) {
+            var post = s.posts.filter(function (x) { return x.id === postId; })[0];
+            if (post) post.comments.push({ userId: s.me.id, content: val, at: Date.now() });
+          });
+          sheet.close();
+          UI.toast('评论成功 ❤️', '💬');
+          render(false);
+        }
+        sheet.el.querySelector('#cmt-send').addEventListener('click', send);
+        input.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
+      }
+
+      /* 数据联动刷新（餐食分享 / 发布日常后自动出现） */
+      UI.onUpdate(function () { render(false); });
+    })();
+  </script>
+</body>
+</html>

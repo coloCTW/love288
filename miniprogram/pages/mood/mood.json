@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "同步心情",
+  "usingComponents": {
+    "hearts": "/components/hearts/hearts"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "添加约饭",
+  "usingComponents": {
+    "hearts": "/components/hearts/hearts"
+  }
+}

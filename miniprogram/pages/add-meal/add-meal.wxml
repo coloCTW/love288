@@ -1,0 +1,70 @@
+<view class="page">
+  <view class="page-head">
+    <view class="head-sub">创建后会同步出现在「计划」里哦</view>
+  </view>
+
+  <view class="card form-card">
+    <view class="form-stack">
+      <view class="field">
+        <view class="field-label">吃什么</view>
+        <input class="input" placeholder-class="ph" placeholder="比如：火锅、日料、烧烤…" value="{{kind}}" data-key="kind" bindinput="onInput" />
+      </view>
+      <view class="field-row">
+        <view class="field {{errDate ? 'invalid' : ''}}">
+          <view class="field-label">日期<text class="req">*</text></view>
+          <picker mode="date" value="{{date}}" start="{{today}}" end="{{maxDate}}" bindchange="onDateChange">
+            <view class="picker">{{date}}</view>
+          </picker>
+          <view class="f-err">还没有选日期哦，约在哪天呀？</view>
+        </view>
+        <view class="field {{errTime ? 'invalid' : ''}}">
+          <view class="field-label">时间<text class="req">*</text></view>
+          <picker mode="time" value="{{time}}" bindchange="onTimeChange">
+            <view class="picker">{{time}}</view>
+          </picker>
+          <view class="f-err">还没有选时间哦～</view>
+        </view>
+      </view>
+      <view class="field {{errLoc ? 'invalid' : ''}}">
+        <view class="field-label">地点<text class="req">*</text></view>
+        <input class="input" placeholder-class="ph" placeholder="餐厅名字，比如：海底捞（陆家嘴店）" value="{{location}}" data-key="location" bindinput="onInput" />
+        <view class="f-err">地点还没有填，TA 会找不到路啦～</view>
+      </view>
+      <view class="field">
+        <view class="field-label">城市</view>
+        <picker mode="selector" range="{{cities}}" value="{{cityIndex}}" bindchange="onCityChange">
+          <view class="picker">
+            <text>{{cities[cityIndex]}}</text>
+            <view class="picker-arrow"></view>
+          </view>
+        </picker>
+      </view>
+      <view class="field">
+        <view class="field-label">想对 TA 说</view>
+        <input class="input" placeholder-class="ph" placeholder="比如：和你一起吃饭，真好～" value="{{note}}" data-key="note" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <view class="field-label">图片（选填）</view>
+        <view class="photo-strip">
+          <view class="photo-slot {{photoFilled ? 'filled' : ''}}" bindtap="onPhotoTap" hover-class="btn-press">
+            <block wx:if="{{photoFilled}}">
+              <view class="filled-photo" style="background-image:url('{{photoUri || icons.bowl}}');"></view>
+              <view class="rm-photo" catchtap="onPhotoRemove" style="background-image:url('{{icons.check}}');"></view>
+            </block>
+            <block wx:else>
+              <view class="ic ic-30" style="background-image:url('{{icons.photo}}');"></view>
+              <text>添加图片</text>
+            </block>
+          </view>
+        </view>
+      </view>
+      <button class="btn btn-primary btn-block submit-btn" hover-class="btn-press" bindtap="onSubmit">
+        <view wx:if="{{busy}}" class="sun-spin ic ic-24" style="background-image:url('{{icons.sun}}');"></view>
+        <!-- <view wx:else class="ic ic-24" style="background-image:url('{{icons.heart}}');"></view> -->
+        <text>{{busy ? '正在约定' : '创建约饭'}}</text>
+      </button>
+    </view>
+  </view>
+
+  <hearts id="hearts"></hearts>
+</view>

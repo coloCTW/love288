@@ -1,0 +1,8 @@
+{
+  "navigationStyle":"custom",
+  "navigationBarTitleText": "首页",
+  "usingComponents": {
+    "sheet": "/components/sheet/sheet",
+    "hearts": "/components/hearts/hearts"
+  }
+}

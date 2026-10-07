@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>好好吃饭 · 两个人的小世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/css/app.css" />
+</head>
+<body>
+  <div class="phone">
+    <header class="wx-nav" data-od-id="eat-nav">
+      <span class="nav-title">好好吃饭</span>
+      <div class="wx-capsule" aria-hidden="true">
+        <span class="caps-item"><svg class="ic-dots"><use href="#ic-dots"></use></svg></span>
+        <span class="caps-divider"></span>
+        <span class="caps-item"><svg class="ic-ring"><use href="#ic-ring"></use></svg></span>
+      </div>
+    </header>
+
+    <main class="page stack" data-od-id="eat-page">
+      <div class="page-head">
+        <p class="hand">关心 TA，记得好好吃饭～</p>
+        <p class="head-sub">把「吃饭」变成我们每天一次的轻互动</p>
+      </div>
+
+      <!-- 模块一：一键提醒 TA 吃饭 -->
+      <section class="card card-green" data-od-id="eat-remind">
+        <div class="remind-row">
+          <span class="bell-badge" id="remind-bell"><svg class="ic"><use href="#ic-bell"></use></svg></span>
+          <div class="remind-main">
+            <p class="r-title">一键提醒吃饭</p>
+            <p class="r-sub">关心 TA，记得好好吃饭～</p>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" id="btn-remind" style="margin-top:14px">
+          <svg class="ic"><use href="#ic-bell"></use></svg><span id="btn-remind-txt">提醒 TA</span>
+        </button>
+        <p style="text-align:center;font-size:11.5px;color:var(--muted);margin-top:10px" id="remind-count">今天还没有提醒过，每天最多 3 次哦</p>
+      </section>
+
+      <!-- 模块二：最近一次约饭 -->
+      <section class="card card-peach meal-card rel" data-od-id="eat-meal">
+        <span class="doodle" style="top:-4px;right:8px;width:26px;height:26px;color:var(--sun-ink);opacity:.5" aria-hidden="true"><svg class="ic"><use href="#ic-flower"></use></svg></span>
+        <div class="meal-kind">
+          <span class="k-left">
+            <span class="k-icon"><svg class="ic"><use href="#ic-bowl"></use></svg></span>
+            <span>约饭 · 最近一次</span>
+          </span>
+          <span class="chip green" style="font-weight:700" id="meal-chip">--</span>
+        </div>
+        <div id="meal-slot"></div>
+        <a class="btn btn-soft btn-block" href="04-add-meal.html" style="margin-top:14px">
+          <svg class="ic"><use href="#ic-plus"></use></svg>添加约饭
+        </a>
+      </section>
+
+      <!-- 模块三：分享今日餐食 -->
+      <section class="card card-sun" data-od-id="eat-share">
+        <p class="card-title">分享今日餐食</p>
+        <p class="card-sub">把好吃的分享给 TA 吧～</p>
+        <div id="today-share" style="margin-top:12px"></div>
+        <a class="btn btn-soft btn-block" href="05-meal-share.html" style="margin-top:14px">
+          <svg class="ic"><use href="#ic-camera"></use></svg>去分享
+        </a>
+      </section>
+
+      <!-- 历史餐食 -->
+      <section data-od-id="eat-history">
+        <div class="row-between" style="padding:2px 4px 2px">
+          <p style="font-size:14px;font-weight:700">历史餐食</p>
+          <span class="chip sun" id="history-count">-- 顿</span>
+        </div>
+        <div class="h-strip" id="history-strip" style="margin-top:10px"></div>
+      </section>
+    </main>
+
+    <nav class="tabbar" data-od-id="tabbar">
+      <a class="tab" href="01-home.html"><svg class="ic"><use href="#ic-home"></use></svg><span>首页</span></a>
+      <a class="tab active" href="03-eat.html"><svg class="ic"><use href="#ic-bowl"></use></svg><span>好好吃饭</span></a>
+      <a class="tab" href="06-daily.html"><svg class="ic"><use href="#ic-journal"></use></svg><span>日常</span></a>
+      <a class="tab" href="08-plan.html"><svg class="ic"><use href="#ic-calendar"></use></svg><span>计划</span></a>
+    </nav>
+  </div>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/app.js"></script>
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var REMIND_POOL = ['记得好好吃饭呀～', '到饭点啦，别饿到自己哦 ❤️', '宝宝，去吃饭啦～', '我提醒你吃饭啦，快去～'];
+      var MAX_REMIND = 3;
+
+      /* 今日提醒计数（跨天重置） */
+      function todayRemind() {
+        var s = Store.get();
+        if (s.remind.date !== Store.today()) {
+          Store.commit(function (st) { st.remind = { date: Store.today(), count: 0 }; });
+        }
+        return Store.get().remind.count;
+      }
+
+      function render() {
+        var st = Store.get();
+
+        /* 提醒按钮状态 */
+        var count = st.remind.date === Store.today() ? st.remind.count : 0;
+        var btn = $('btn-remind');
+        var txt = $('btn-remind-txt');
+        if (count >= MAX_REMIND) {
+          btn.className = 'btn btn-soft btn-block';
+          txt.textContent = '今天已提醒 ' + count + ' 次啦';
+          $('remind-count').textContent = '明天再提醒 TA 吧，今天已经很温柔了 ❤️';
+        } else if (count > 0) {
+          btn.className = 'btn btn-primary btn-block';
+          txt.textContent = '已提醒 TA ❤️';
+          $('remind-count').textContent = '今天已提醒 ' + count + '/' + MAX_REMIND + ' 次';
+        } else {
+          btn.className = 'btn btn-primary btn-block';
+          txt.textContent = '提醒 TA';
+          $('remind-count').textContent = '今天还没有提醒过，每天最多 3 次哦';
+        }
+
+        /* 最近一次约饭（当前时间之后最近的一条，PRD §9.3） */
+        var upcoming = st.meals
+          .filter(function (m) { return m.date >= Store.today(); })
+          .sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+        var slot = $('meal-slot');
+        if (upcoming.length) {
+          var m = upcoming[0];
+          $('meal-chip').textContent = Store.countdown(m.date);
+          slot.innerHTML =
+            '<p class="meal-title">' + esc(m.kind) + '</p>' +
+            '<div class="meal-meta">' +
+              '<span style="display:inline-flex;align-items:center;gap:4px">' + Icon('ic-calendar') + Store.fmtDate(m.date) + '</span>' +
+              '<span style="display:inline-flex;align-items:center;gap:4px">' + Icon('ic-clock') + esc(m.time) + '</span>' +
+              '<span style="display:inline-flex;align-items:center;gap:4px">' + Icon('ic-pin') + esc(m.city + ' · ' + m.location) + '</span>' +
+            '</div>' +
+            (m.note ? '<p class="meal-note">“' + esc(m.note) + '”</p>' : '');
+        } else {
+          $('meal-chip').textContent = '暂无';
+          slot.innerHTML =
+            '<div class="empty" style="border:none;background:transparent;padding:18px 10px 6px">' +
+              '<span class="e-ill" style="display:flex;align-items:center;gap:6px">' + Avatar('lin', 44) + Avatar('su', 44) + '</span>' +
+              '<p class="e-title">还没有约饭</p>' +
+              '<p class="e-sub">一起安排下一顿吧 ❤️</p>' +
+            '</div>';
+        }
+
+        /* 今日餐食分享 */
+        var today = Store.today();
+        var todayShares = st.mealShares.filter(function (m) {
+          return Store.iso(new Date(m.at)) === today;
+        });
+        var shareBox = $('today-share');
+        if (todayShares.length) {
+          shareBox.innerHTML = todayShares.map(function (ms) {
+            var tiles = '';
+            for (var i = 0; i < ms.photoCount; i++) {
+              tiles += '<span class="p-photo">' + Icon('ic-bowl') + '</span>';
+            }
+            return '<div class="photo-strip" style="grid-template-columns:repeat(' + ms.photoCount + ',1fr)">' + tiles + '</div>' +
+              '<p style="margin-top:10px;font-size:13.5px">“' + esc(ms.content) + '”</p>' +
+              '<p style="font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-top:4px">' + esc(Store.fmtRel(ms.at)) + ' · 已同步到日常</p>';
+          }).join('');
+        } else {
+          shareBox.innerHTML =
+            '<div class="photo-strip">' +
+              '<span class="photo-slot"><span class="slot-inner">' + Icon('ic-photo') + '<span>照片 1</span></span></span>' +
+              '<span class="photo-slot"><span class="slot-inner">' + Icon('ic-photo') + '<span>照片 2</span></span></span>' +
+              '<span class="photo-slot"><span class="slot-inner">' + Icon('ic-photo') + '<span>照片 3</span></span></span>' +
+            '</div>' +
+            '<p style="margin-top:10px;font-size:13px">今天也要好好吃饭呀～ <span class="heart-txt">❤️</span></p>' +
+            '<p class="photo-hint">还没有分享，拍下今天的美食发给 TA 吧</p>';
+        }
+
+        /* 历史餐食 */
+        var history = st.mealShares
+          .filter(function (m) { return Store.iso(new Date(m.at)) < today; })
+          .sort(function (a, b) { return b.at - a.at; });
+        $('history-count').textContent = history.length + ' 顿';
+        $('history-strip').innerHTML = history.map(function (ms) {
+          return '<div class="h-item">' +
+            '<div class="h-photo">' + Icon('ic-bowl') + '</div>' +
+            '<p class="h-cap">' + esc(ms.content) + '</p>' +
+            '<p class="h-at">' + esc(Store.fmtRel(ms.at)) + '</p>' +
+          '</div>';
+        }).join('') || '<p style="font-size:12.5px;color:var(--muted)">还没有历史餐食，从今天开始记录吧～</p>';
+      }
+      render();
+
+      /* 一键提醒（PRD §8.2：铃铛摇晃 + 随机文案 + 每天最多 3 次） */
+      $('btn-remind').addEventListener('click', function () {
+        var count = todayRemind();
+        if (count >= MAX_REMIND) { UI.toast('今天已经提醒 3 次啦，TA 会记得的 ❤️', '🔔'); return; }
+        var bell = $('remind-bell');
+        bell.classList.remove('shake'); void bell.offsetWidth; bell.classList.add('shake');
+        UI.withSun(this, 600, '正在提醒', function () {
+          Store.commit(function (s) {
+            if (s.remind.date !== Store.today()) s.remind = { date: Store.today(), count: 0 };
+            s.remind.count += 1;
+          });
+          UI.toast('已发送：' + REMIND_POOL[Math.floor(Math.random() * REMIND_POOL.length)], '🔔');
+          render();
+        });
+      });
+
+      UI.onUpdate(render);
+    })();
+  </script>
+</body>
+</html>

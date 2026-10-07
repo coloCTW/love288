@@ -1,0 +1,247 @@
+/* 计划 · 页面专属样式 */
+.page-head {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 0;
+  z-index: -1;
+}
+
+/* 月历 */
+.cal-card {
+  padding: 28rpx;
+}
+
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-nav {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 999rpx;
+  background-color: var(--paper);
+  background-repeat: no-repeat;
+  background-size: 44% 44%;
+  background-position: center;
+  box-shadow: 0 4rpx 12rpx rgba(128, 128, 115, 0.10);
+}
+
+.cal-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.cal-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.cal-grid.slide-in {
+  animation: cal-slide-in 0.25s ease-out;
+}
+
+.cal-wd-row {
+  margin-top: 20rpx;
+}
+
+.cal-wd {
+  width: 14.28%;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--muted);
+  padding: 8rpx 0;
+}
+
+.cal-grid-wrap {
+  margin-top: 8rpx;
+}
+
+.cal-cell {
+  width: 14.28%;
+  height: 82rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  border-radius: 24rpx;
+}
+
+.cal-cell.other .d-num {
+  color: rgba(117, 103, 92, 0.35);
+}
+
+.cal-cell.today {
+  background: var(--accent-soft);
+  border: 3rpx solid var(--accent);
+}
+
+.cal-cell.selected {
+  background: var(--accent-ink);
+}
+
+.cal-cell.selected .d-num {
+  color: #fdf6f0;
+}
+
+.d-num {
+  font-size: 25rpx;
+  color: var(--fg);
+  line-height: 1.2;
+}
+
+.d-marks {
+  display: flex;
+  gap: 4rpx;
+  height: 14rpx;
+}
+
+.mk {
+  width: 14rpx;
+  height: 14rpx;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20rpx;
+  margin-top: 20rpx;
+  font-size: 21rpx;
+  color: var(--muted);
+}
+
+.lg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.lg-today {
+  margin-left: auto;
+}
+
+.today-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 999rpx;
+  background: var(--accent-soft);
+  border: 3rpx solid var(--accent);
+}
+
+/* 即将到来的约会 */
+.upcoming-head {
+  padding: 4rpx 8rpx;
+}
+
+.upcoming-title {
+  font-size: 29rpx;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.btn-all {
+  border-radius: 999rpx;
+}
+
+.day-hint {
+  font-size: 24rpx;
+  color: var(--muted);
+  padding: 0 8rpx 4rpx;
+}
+
+.date-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+
+.date-card {
+  padding: 26rpx 28rpx;
+}
+
+.dc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.dc-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.dc-when {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 23rpx;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.dc-when.when-soon {
+  color: var(--accent-ink);
+}
+
+.dc-when.when-later {
+  color: var(--muted);
+}
+
+.dc-clock {
+  width: 32rpx;
+  height: 32rpx;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.dc-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  margin-top: 14rpx;
+}
+
+.dm-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: var(--muted);
+}
+
+.dm-ic {
+  width: 34rpx;
+  height: 34rpx;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.dc-foot {
+  font-size: 23rpx;
+  color: var(--accent-ink);
+  margin-top: 12rpx;
+}
+
+.add-date-btn {
+  margin-top: 4rpx;
+}
+
+.e-ill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
